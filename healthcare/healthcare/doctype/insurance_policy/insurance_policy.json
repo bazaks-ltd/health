@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:policy_number",
+ "creation": "2024-04-02 11:32:10.814218",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "policy_number",
+  "insurance_company",
+  "policy_holder_name",
+  "coverage_amount",
+  "coverage_start_date",
+  "coverage_end_date",
+  "list_of_covered_treatmentservices"
+ ],
+ "fields": [
+  {
+   "fieldname": "policy_number",
+   "fieldtype": "Data",
+   "label": "Policy number",
+   "unique": 1
+  },
+  {
+   "fieldname": "insurance_company",
+   "fieldtype": "Link",
+   "label": "Insurance company",
+   "options": "Insurance Company"
+  },
+  {
+   "fieldname": "policy_holder_name",
+   "fieldtype": "Data",
+   "label": "Policy holder name"
+  },
+  {
+   "fieldname": "coverage_amount",
+   "fieldtype": "Currency",
+   "label": "Coverage amount"
+  },
+  {
+   "fieldname": "coverage_start_date",
+   "fieldtype": "Date",
+   "label": "Coverage start date"
+  },
+  {
+   "fieldname": "coverage_end_date",
+   "fieldtype": "Date",
+   "label": "Coverage end date"
+  },
+  {
+   "fieldname": "list_of_covered_treatmentservices",
+   "fieldtype": "Table",
+   "label": "List of covered treatment/services",
+   "options": "Covered Treatment"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-04-02 14:53:47.890801",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Insurance Policy",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

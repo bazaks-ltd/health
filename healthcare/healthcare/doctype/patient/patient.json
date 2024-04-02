@@ -68,7 +68,11 @@
   "alcohol_current_use",
   "column_break_32",
   "surrounding_factors",
-  "other_risk_factors"
+  "other_risk_factors",
+  "insurance_tab",
+  "insurance_policy_number",
+  "coverage_status",
+  "claims_history"
  ],
  "fields": [
   {
@@ -483,16 +487,39 @@
    "fieldname": "medical_history_tab",
    "fieldtype": "Tab Break",
    "label": "Medical History"
+  },
+  {
+   "fieldname": "insurance_tab",
+   "fieldtype": "Tab Break",
+   "label": "Insurance"
+  },
+  {
+   "fieldname": "insurance_policy_number",
+   "fieldtype": "Link",
+   "label": "Insurance policy number",
+   "options": "Insurance Policy"
+  },
+  {
+   "fieldname": "coverage_status",
+   "fieldtype": "Select",
+   "label": "Coverage status",
+   "options": "Active\nInactive\nPending"
+  },
+  {
+   "fieldname": "claims_history",
+   "fieldtype": "Text Editor",
+   "label": "Claims history"
   }
  ],
  "icon": "fa fa-user",
  "image_field": "image",
  "links": [],
  "max_attachments": 50,
- "modified": "2023-01-13 17:48:59.069268",
+ "modified": "2024-04-02 14:22:20.376273",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

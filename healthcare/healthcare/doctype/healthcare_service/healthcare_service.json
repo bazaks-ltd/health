@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:service_name",
+ "creation": "2024-04-02 11:00:45.293171",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "service_name",
+  "service_type",
+  "description",
+  "standard_rate",
+  "insurance_coverage",
+  "active"
+ ],
+ "fields": [
+  {
+   "fieldname": "service_name",
+   "fieldtype": "Data",
+   "label": "Service name",
+   "unique": 1
+  },
+  {
+   "fieldname": "service_type",
+   "fieldtype": "Select",
+   "label": "Service type",
+   "options": "General Medical Consultation\nPreventive Care\nImmunizations\nHealth Screenings\nCardiology\nDermatology\nEndocrinology\nGastroenterology\nNeurology\nOrthopedics\nPulmonology\nUrology\nBlood Tests\nUrine Tests\nImaging Services (X-rays, MRI, CT scans)\nBiopsy\nGeneral Surgery\nOrthopedic Surgery\nCardiovascular Surgery\nNeurosurgery\nPlastic Surgery\nEmergency Room Visits\nUrgent Care Visits\nPrenatal Care\nChildbirth\nPostnatal Care\nNeonatal Intensive Care\nPsychiatry\nCounseling and Therapy\nSubstance Abuse Treatment\nPhysical Therapy\nOccupational Therapy\nSpeech Therapy\nRoutine Dental Check-ups\nDental Cleanings\nDental Fillings\nDental Surgery\nRoutine Eye Exams\nPrescription Glasses\nContact Lenses\nOphthalmology Services\nPrescription Medications\nOver-the-Counter Medications\nHome Nursing Care\nHome Health Aide Services\nMedical Equipment and Supplies"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "fieldname": "standard_rate",
+   "fieldtype": "Currency",
+   "label": "Standard rate"
+  },
+  {
+   "default": "0",
+   "fieldname": "insurance_coverage",
+   "fieldtype": "Check",
+   "label": "Insurance coverage"
+  },
+  {
+   "default": "1",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-04-02 11:22:06.730588",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Healthcare Service",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

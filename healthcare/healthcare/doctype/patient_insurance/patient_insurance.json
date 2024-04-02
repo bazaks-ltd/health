@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-04-02 11:54:54.908148",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "patient_id",
+  "insurance_policy_number",
+  "coverage_status",
+  "claims_history"
+ ],
+ "fields": [
+  {
+   "fieldname": "patient_id",
+   "fieldtype": "Link",
+   "label": "Patient ID",
+   "options": "Patient"
+  },
+  {
+   "fieldname": "insurance_policy_number",
+   "fieldtype": "Link",
+   "label": "Insurance Policy number",
+   "options": "Insurance Policy"
+  },
+  {
+   "fieldname": "coverage_status",
+   "fieldtype": "Select",
+   "label": "Coverage status",
+   "options": "Active\nInactive\nPending"
+  },
+  {
+   "fieldname": "claims_history",
+   "fieldtype": "Text Editor",
+   "label": "Claims history"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-04-02 11:57:05.076632",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Patient Insurance",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

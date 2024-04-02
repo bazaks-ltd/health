@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-04-02 11:49:44.930865",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "treament",
+  "description",
+  "coverage_percentage"
+ ],
+ "fields": [
+  {
+   "fieldname": "treament",
+   "fieldtype": "Link",
+   "label": "Treament",
+   "options": "Healthcare Service"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "default": "100",
+   "fieldname": "coverage_percentage",
+   "fieldtype": "Float",
+   "label": "Coverage percentage"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-04-02 11:53:34.859876",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Covered Treatment",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

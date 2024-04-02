@@ -1,0 +1,67 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-04-02 11:23:10.534308",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "healthcare_service",
+  "description",
+  "coverage_percentage",
+  "coverage_amount",
+  "approval_code",
+  "valid_from",
+  "valid_to"
+ ],
+ "fields": [
+  {
+   "fieldname": "healthcare_service",
+   "fieldtype": "Link",
+   "label": "Healthcare service",
+   "options": "Healthcare Service"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "default": "100",
+   "fieldname": "coverage_percentage",
+   "fieldtype": "Float",
+   "label": "Coverage percentage"
+  },
+  {
+   "fieldname": "coverage_amount",
+   "fieldtype": "Currency",
+   "label": "Coverage amount"
+  },
+  {
+   "fieldname": "approval_code",
+   "fieldtype": "Data",
+   "label": "Approval code"
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "label": "Valid from"
+  },
+  {
+   "fieldname": "valid_to",
+   "fieldtype": "Date",
+   "label": "Valid To"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-04-02 11:39:59.743292",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Approved Treatment",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

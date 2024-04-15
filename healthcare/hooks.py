@@ -289,3 +289,9 @@ standard_queries = {
 treeviews = [
 	"Healthcare Service Unit",
 ]
+
+fixtures = [
+	{
+		"dt": "Healthcare Service Unit"
+	}
+]

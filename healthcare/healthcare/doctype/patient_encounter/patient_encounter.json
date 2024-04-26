@@ -9,16 +9,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "details_tab",
+  "section_break_33",
+  "encounter_comment",
+  "sb_refs",
+  "amended_from",
+  "past_medical_records_tab",
+  "section_break_rjdm",
   "naming_series",
   "title",
   "appointment",
   "appointment_type",
-  "patient",
-  "patient_name",
-  "patient_sex",
-  "patient_age",
-  "inpatient_record",
-  "inpatient_status",
   "column_break_6",
   "company",
   "status",
@@ -30,28 +31,46 @@
   "google_meet_link",
   "invoiced",
   "submit_orders_on_save",
+  "patient_profile_section",
+  "patient",
+  "patient_name",
+  "patient_sex",
+  "patient_age",
+  "inpatient_record",
+  "inpatient_status",
+  "section_break_xepy",
+  "medical_history_placeholder",
+  "medical_history_tab",
+  "chief_complaint",
+  "past_history",
+  "examination_tab",
+  "examination_findings",
   "sb_symptoms",
   "symptoms",
   "symptoms_in_print",
   "get_applicable_treatment_plans",
-  "physical_examination",
+  "provisional_diagnosis_tab",
+  "section_break_fcah",
+  "column_break_cepk",
   "diagnosis",
   "diagnosis_in_print",
+  "section_break_oadt",
+  "provisional_diagnosis",
+  "investigation_tab",
+  "sb_test_prescription",
+  "lab_test_prescription",
+  "treatment_tab",
   "codification",
   "codification_table",
   "sb_drug_prescription",
   "drug_prescription",
-  "sb_test_prescription",
-  "lab_test_prescription",
+  "plan_tab",
+  "note",
   "sb_procedures",
   "procedure_prescription",
   "rehabilitation_section",
   "therapy_plan",
   "therapies",
-  "section_break_33",
-  "encounter_comment",
-  "sb_refs",
-  "amended_from",
   "encounter_details_tab",
   "order_history_html",
   "encounter_details",
@@ -70,6 +89,7 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Series",
    "no_copy": 1,
    "options": "HLC-ENC-.YYYY.-",
@@ -116,6 +136,7 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Company",
    "options": "Company"
   },
@@ -157,6 +178,7 @@
   {
    "fieldname": "sb_symptoms",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Encounter Impression"
   },
   {
@@ -176,10 +198,6 @@
    "no_copy": 1,
    "print_hide": 1,
    "report_hide": 1
-  },
-  {
-   "fieldname": "physical_examination",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "diagnosis",
@@ -203,6 +221,7 @@
    "collapsible": 1,
    "fieldname": "codification",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Medical Coding"
   },
   {
@@ -262,8 +281,10 @@
    "read_only": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "rehabilitation_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Rehabilitation"
   },
   {
@@ -274,7 +295,8 @@
   },
   {
    "fieldname": "section_break_33",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "hidden": 1
   },
   {
    "fieldname": "therapy_plan",
@@ -351,6 +373,7 @@
    "depends_on": "eval:!doc.__islocal && doc.docstatus == 0;",
    "fieldname": "encounter_details_tab",
    "fieldtype": "Tab Break",
+   "hidden": 1,
    "label": "Encounter Details"
   },
   {
@@ -387,6 +410,108 @@
    "fieldname": "order_history_html",
    "fieldtype": "HTML",
    "label": "Order History"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "past_medical_records_tab",
+   "fieldtype": "Tab Break",
+   "label": "Past Medical Records"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_rjdm",
+   "fieldtype": "Section Break",
+   "label": "General"
+  },
+  {
+   "fieldname": "patient_profile_section",
+   "fieldtype": "Section Break",
+   "label": "Patient Profile"
+  },
+  {
+   "depends_on": "eval:doc.patient;",
+   "fieldname": "section_break_xepy",
+   "fieldtype": "Section Break",
+   "label": "Past Medical History"
+  },
+  {
+   "fieldname": "medical_history_placeholder",
+   "fieldtype": "Text",
+   "label": "Medical History Placeholder"
+  },
+  {
+   "fieldname": "medical_history_tab",
+   "fieldtype": "Tab Break",
+   "label": "Medical History"
+  },
+  {
+   "fieldname": "chief_complaint",
+   "fieldtype": "Small Text",
+   "label": "Chief Complaint"
+  },
+  {
+   "fieldname": "past_history",
+   "fieldtype": "Small Text",
+   "label": "Past History"
+  },
+  {
+   "fieldname": "examination_tab",
+   "fieldtype": "Tab Break",
+   "label": "Examination"
+  },
+  {
+   "fieldname": "examination_findings",
+   "fieldtype": "Small Text",
+   "label": "Examination Findings"
+  },
+  {
+   "fieldname": "provisional_diagnosis_tab",
+   "fieldtype": "Tab Break",
+   "label": "Provisional Diagnosis"
+  },
+  {
+   "fieldname": "section_break_fcah",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "column_break_cepk",
+   "fieldtype": "Column Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "section_break_oadt",
+   "fieldtype": "Section Break",
+   "label": "Provisional Diagnosis"
+  },
+  {
+   "fieldname": "provisional_diagnosis",
+   "fieldtype": "Small Text",
+   "label": "Provisional Diagnosis"
+  },
+  {
+   "fieldname": "investigation_tab",
+   "fieldtype": "Tab Break",
+   "label": "Investigation"
+  },
+  {
+   "fieldname": "treatment_tab",
+   "fieldtype": "Tab Break",
+   "label": "Treatment"
+  },
+  {
+   "fieldname": "plan_tab",
+   "fieldtype": "Tab Break",
+   "label": "Plan"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Doctor's Note"
   }
  ],
  "is_submittable": 1,
@@ -396,7 +521,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2023-11-07 18:03:12.793649",
+ "modified": "2024-04-26 15:28:19.606074",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient Encounter",

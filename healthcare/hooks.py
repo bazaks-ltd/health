@@ -293,5 +293,6 @@ treeviews = [
 fixtures = [
 	{
 		"dt": "Healthcare Service Unit"
-	}
+	},
+    "Medication Class"
 ]

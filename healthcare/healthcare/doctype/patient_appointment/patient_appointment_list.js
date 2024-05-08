@@ -27,12 +27,12 @@ frappe.listview_settings['Patient Appointment'] = {
 			return 'Begin Consultation';
 		},
 		action(doc) {
-			// when clicking this button should open new consultation with prefilled values
-
-			// const link = '/app/patient-encounter/new-patient-encounter' + '/?' + 'patient=' + encodeURIComponent(doc.patient);
-			// frappe.set_route(link);
-
-			frappe.set_route("Form", "Patient Encounter", "new-patient-encounter");
+			const frm = new frappe.ui.form.Form("Patient Appointment")
+			frm.doc = doc
+			frappe.model.open_mapped_doc({
+				method: 'healthcare.healthcare.doctype.patient_appointment.patient_appointment.make_encounter',
+				frm,
+			});
 		}
 	},
 };

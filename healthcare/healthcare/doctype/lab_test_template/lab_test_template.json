@@ -10,6 +10,7 @@
  "field_order": [
   "lab_test_name",
   "department",
+  "group",
   "column_break_3",
   "disabled",
   "nursing_checklist_template",
@@ -408,10 +409,15 @@
   {
    "fieldname": "column_break_buub",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "group",
+   "fieldtype": "Data",
+   "label": "Group"
   }
  ],
  "links": [],
- "modified": "2023-11-03 15:28:04.801812",
+ "modified": "2024-06-13 23:01:34.619702",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Lab Test Template",

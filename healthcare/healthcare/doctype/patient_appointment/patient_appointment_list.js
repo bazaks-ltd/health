@@ -27,12 +27,8 @@ frappe.listview_settings['Patient Appointment'] = {
 			return 'Begin Consultation';
 		},
 		action(doc) {
-			const frm = new frappe.ui.form.Form("Patient Appointment")
-			frm.doc = doc
-			frappe.model.open_mapped_doc({
-				method: 'healthcare.healthcare.doctype.patient_appointment.patient_appointment.make_encounter',
-				frm,
-			});
+			const { patient } = doc
+			window.open(`/clinic/consultation/?patient=${patient}`, '_blank')
 		}
 	},
 };

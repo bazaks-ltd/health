@@ -130,8 +130,12 @@ frappe.ui.form.on('Healthcare Practitioner', {
 						}
 					);
 
+					console.log('loaded')
+
 					if (!frm.doc.first_name || frm.doc.first_name != data.message.first_name)
 						frappe.model.set_value(frm.doctype,frm.docname, 'first_name', data.message.first_name);
+					if (!frm.doc.practitioner_name || frm.doc.practitioner_name != data.message.full_name)
+						frappe.model.set_value(frm.doctype,frm.docname, 'practitioner_name', 'Dr. ' + data.message.full_name);
 					if (!frm.doc.middle_name || frm.doc.middle_name != data.message.middle_name)
 						frappe.model.set_value(frm.doctype,frm.docname, 'middle_name', data.message.middle_name);
 					if (!frm.doc.last_name || frm.doc.last_name != data.message.last_name)

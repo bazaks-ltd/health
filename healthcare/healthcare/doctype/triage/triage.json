@@ -1,0 +1,89 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-08-10 03:52:50.524527",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "patient",
+  "level",
+  "vital_signs",
+  "column_break_rfhm",
+  "time",
+  "healthcare_practitioner",
+  "section_break_mgje",
+  "symptoms"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "label": "Patient",
+   "options": "Patient"
+  },
+  {
+   "fieldname": "level",
+   "fieldtype": "Autocomplete",
+   "label": "Level",
+   "options": "Critical\nHigh\nModerate\nLow"
+  },
+  {
+   "fieldname": "column_break_rfhm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Now",
+   "fieldname": "time",
+   "fieldtype": "Datetime",
+   "label": "Time"
+  },
+  {
+   "fieldname": "healthcare_practitioner",
+   "fieldtype": "Link",
+   "label": "Healthcare Practitioner",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "fieldname": "section_break_mgje",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "symptoms",
+   "fieldtype": "Long Text",
+   "label": "Symptoms"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "vital_signs",
+   "fieldtype": "Link",
+   "label": "Vital Signs",
+   "options": "Vital Signs"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-08-10 04:26:54.731401",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Triage",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

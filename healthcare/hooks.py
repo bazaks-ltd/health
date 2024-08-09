@@ -294,5 +294,6 @@ fixtures = [
 	{
 		"dt": "Healthcare Service Unit"
 	},
+    { "dt": "Workspace", "filters": [["name", "in", ["Emergency"]]] },
     "Medication Class"
 ]

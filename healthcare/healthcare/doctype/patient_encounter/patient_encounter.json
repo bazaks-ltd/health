@@ -56,21 +56,7 @@
   "order_history_html",
   "encounter_details",
   "notes_tab",
-  "clinical_notes",
-  "pcare_tab",
-  "meta_section",
-  "type",
-  "consultation_section",
-  "chief_complaint",
-  "past_history",
-  "clinical_examination",
-  "investigation_done",
-  "provisional_diagnosis",
-  "treatment",
-  "plan",
-  "radiology_request",
-  "laboratory_request",
-  "other_requests"
+  "clinical_notes"
  ],
  "fields": [
   {
@@ -401,78 +387,6 @@
    "fieldname": "order_history_html",
    "fieldtype": "HTML",
    "label": "Order History"
-  },
-  {
-   "default": "Out-Patient",
-   "fieldname": "pcare_tab",
-   "fieldtype": "Tab Break",
-   "label": "PCare"
-  },
-  {
-   "fieldname": "meta_section",
-   "fieldtype": "Section Break",
-   "label": "Meta"
-  },
-  {
-   "fieldname": "type",
-   "fieldtype": "Select",
-   "label": "Type",
-   "options": "In-Patient\nOut-Patient\nEmergency"
-  },
-  {
-   "fieldname": "consultation_section",
-   "fieldtype": "Section Break",
-   "label": "Consultation"
-  },
-  {
-   "fieldname": "chief_complaint",
-   "fieldtype": "Data",
-   "label": "Chief Complaint"
-  },
-  {
-   "fieldname": "past_history",
-   "fieldtype": "Data",
-   "label": "Past History"
-  },
-  {
-   "fieldname": "clinical_examination",
-   "fieldtype": "Data",
-   "label": "Clinical Examination"
-  },
-  {
-   "fieldname": "investigation_done",
-   "fieldtype": "Data",
-   "label": "Investigation Done"
-  },
-  {
-   "fieldname": "provisional_diagnosis",
-   "fieldtype": "Data",
-   "label": "Provisional Diagnosis"
-  },
-  {
-   "fieldname": "treatment",
-   "fieldtype": "JSON",
-   "label": "Treatment"
-  },
-  {
-   "fieldname": "plan",
-   "fieldtype": "Data",
-   "label": "Plan"
-  },
-  {
-   "fieldname": "radiology_request",
-   "fieldtype": "JSON",
-   "label": "Radiology Request"
-  },
-  {
-   "fieldname": "laboratory_request",
-   "fieldtype": "JSON",
-   "label": "Laboratory Request"
-  },
-  {
-   "fieldname": "other_requests",
-   "fieldtype": "Data",
-   "label": "Other Requests"
   }
  ],
  "is_submittable": 1,
@@ -480,9 +394,13 @@
   {
    "link_doctype": "Clinical Note",
    "link_fieldname": "reference_name"
+  },
+  {
+   "link_doctype": "Treatment Counselling",
+   "link_fieldname": "admission_encounter"
   }
  ],
- "modified": "2024-07-06 00:14:30.130887",
+ "modified": "2023-11-07 18:03:12.793649",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient Encounter",

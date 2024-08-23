@@ -1,11 +1,9 @@
 /*
 (c) ESS 2015-16
 */
-const d = (((new Date()).toISOString().split('T')[0]).split('-').reverse()).join('-')
-
 frappe.listview_settings['Patient Appointment'] = {
-	filters: [],
-	get_indicator: function (doc) {
+	filters: [["status", "=", "Open"]],
+	get_indicator: function(doc) {
 		var colors = {
 			"Open": "orange",
 			"Scheduled": "yellow",
@@ -16,19 +14,5 @@ frappe.listview_settings['Patient Appointment'] = {
 			"Checked Out": "orange"
 		};
 		return [__(doc.status), colors[doc.status], "status,=," + doc.status];
-	},
-	button: {
-		show() {
-			const is_doctor = frappe.user.has_role('Doctor')
-			return is_doctor;
-		},
-		get_description() { },
-		get_label() {
-			return 'Begin Consultation';
-		},
-		action(doc) {
-			const { patient } = doc
-			window.open(`/clinic/consultation/?patient=${patient}`, '_blank')
-		}
-	},
+	}
 };

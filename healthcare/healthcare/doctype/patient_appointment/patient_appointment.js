@@ -84,10 +84,10 @@ frappe.ui.form.on('Patient Appointment', {
 		if (["Open", "Checked In"].includes(frm.doc.status) || (frm.doc.status == 'Scheduled' && !frm.doc.__islocal)) {
 			frm.add_custom_button(__('Cancel'), function() {
 				update_status(frm, 'Cancelled');
-			}, 'Manage');
+			});
 			frm.add_custom_button(__('Reschedule'), function() {
 				check_and_set_availability(frm);
-			}, 'Manage');
+			});
 
 			if (frm.doc.procedure_template) {
 				frm.add_custom_button(__('Clinical Procedure'), function() {
@@ -104,12 +104,12 @@ frappe.ui.form.on('Patient Appointment', {
 					})
 				}, 'Create');
 			} else {
-				frm.add_custom_button('Begin ' + __('Patient Encounter'), function() {
+				frm.add_custom_button(__('Patient Encounter'), function() {
 					frappe.model.open_mapped_doc({
 						method: 'healthcare.healthcare.doctype.patient_appointment.patient_appointment.make_encounter',
 						frm: frm,
 					});
-				});
+				}, __('Create'));
 			}
 
 			frm.add_custom_button(__('Vital Signs'), function() {
@@ -121,7 +121,7 @@ frappe.ui.form.on('Patient Appointment', {
 			frm.add_custom_button(__('Check In'), () => {
 				frm.set_value("status", "Checked In");
 				frm.save();
-			}, 'Manage');
+			});
 		}
 
 		frm.trigger("make_invoice_button");

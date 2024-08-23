@@ -1,7 +1,7 @@
 from . import __version__ as app_version  # noqa
 
 app_name = "healthcare"
-app_title = "Frappe Health"
+app_title = "Marley Health"
 app_publisher = "earthians Health Informatics Pvt. Ltd."
 app_description = "Modern, Open Source HIS built on Frappe and ERPNext"
 app_icon = "octicon octicon-file-directory"
@@ -125,6 +125,9 @@ doc_events = {
 	"Patient": {
 		"after_insert": "healthcare.regional.india.abdm.utils.set_consent_attachment_details"
 	},
+	"Payment Entry": {
+		"on_submit": "healthcare.healthcare.custom_doctype.payment_entry.set_paid_amount_in_treatment_counselling"
+	},
 }
 
 scheduler_events = {
@@ -134,6 +137,7 @@ scheduler_events = {
 	"daily": [
 		"healthcare.healthcare.doctype.patient_appointment.patient_appointment.update_appointment_status",
 		"healthcare.healthcare.doctype.fee_validity.fee_validity.update_validity_status",
+		"healthcare.healthcare.doctype.inpatient_record.inpatient_record.add_occupied_service_unit_in_ip_to_billables",
 	],
 }
 
@@ -288,12 +292,4 @@ standard_queries = {
 
 treeviews = [
 	"Healthcare Service Unit",
-]
-
-fixtures = [
-	{
-		"dt": "Healthcare Service Unit"
-	},
-    { "dt": "Workspace", "filters": [["name", "in", ["Emergency"]]] },
-    "Medication Class"
 ]

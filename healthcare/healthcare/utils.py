@@ -156,53 +156,55 @@ def get_encounters_to_invoice(patient, company):
 	)
 	if encounters:
 		for encounter in encounters:
-			if encounter.appointment:
-				continue
+			if not encounter.appointment:
+				practitioner_charge = 0
+				income_account = None
+				service_item = None
+				if encounter.practitioner:
+					if encounter.inpatient_record and frappe.db.get_single_value(
+						"Healthcare Settings", "do_not_bill_inpatient_encounters"
+					):
+						continue
 
 					details = get_appointment_billing_item_and_rate(encounter)
 					service_item = details.get("service_item")
 					practitioner_charge = details.get("practitioner_charge")
 					income_account = get_income_account(encounter.practitioner, encounter.company)
 
-			if encounter.practitioner:
-				if encounter.inpatient_record and frappe.db.get_single_value(
-					"Healthcare Settings", "do_not_bill_inpatient_encounters"
-				):
-					continue
+				coverage_details = None
+				if encounter.insurance_coverage:
+					coverage_details = frappe.get_cached_value('Patient Insurance Coverage', encounter.insurance_coverage,
+						['status', 'coverage', 'discount', 'price_list_rate', 'item_code', 'qty', 'policy_number', 'coverage_validity_end_date', 'company', 'insurance_payor'],
+						as_dict=True)
 
-			income_account = get_income_account(encounter.practitioner, encounter.company)
+				if coverage_details and coverage_details.status in ['Approved', 'Partly Invoiced'] \
+					and getdate() <= coverage_details.coverage_validity_end_date and company == coverage_details.company:
+					encounters_to_invoice.append({
+						'reference_type': 'Patient Encounter',
+						'reference_name': encounter.name,
+						'income_account': income_account,
+						'insurance_coverage': encounter.insurance_coverage,
+						'patient_insurance_policy': coverage_details.policy_number,
+						'insurance_payor': coverage_details.insurance_payor,
+						'service': coverage_details.item_code,
+						'rate': coverage_details.price_list_rate,
+						'coverage_percentage': coverage_details.coverage,
+						'discount_percentage': coverage_details.discount,
+						'coverage_rate': coverage_details.price_list_rate,
+						'coverage_qty': coverage_details.qty
+					})
+				else:
+					encounters_to_invoice.append(
+						{
+							"reference_type": "Patient Encounter",
+							"reference_name": encounter.name,
+							"service": service_item,
+							"rate": practitioner_charge,
+							"income_account": income_account,
+						}
+					)
 
-			coverage_details = None
-			if encounter.insurance_coverage:
-				coverage_details = frappe.get_cached_value('Patient Insurance Coverage', encounter.insurance_coverage,
-					['status', 'coverage', 'discount', 'price_list_rate', 'item_code', 'qty', 'policy_number', 'coverage_validity_end_date', 'company', 'insurance_payor'],
-					as_dict=True)
 
-			if coverage_details and coverage_details.status in ['Approved', 'Partly Invoiced'] \
-				and getdate() <= coverage_details.coverage_validity_end_date and company == coverage_details.company:
-				encounters_to_invoice.append({
-					'reference_type': 'Patient Encounter',
-					'reference_name': encounter.name,
-					'income_account': income_account,
-					'insurance_coverage': encounter.insurance_coverage,
-					'patient_insurance_policy': coverage_details.policy_number,
-					'insurance_payor': coverage_details.insurance_payor,
-					'service': coverage_details.item_code,
-					'rate': coverage_details.price_list_rate,
-					'coverage_percentage': coverage_details.coverage,
-					'discount_percentage': coverage_details.discount,
-					'coverage_rate': coverage_details.price_list_rate,
-					'coverage_qty': coverage_details.qty
-				})
-			else:
-				billing_details = get_service_item_and_practitioner_charge(encounter)
-				encounters_to_invoice.append({
-					"reference_type": "Patient Encounter",
-					"reference_name": encounter.name,
-					"income_account": income_account,
-					"service": billing_details.get("service_item"),
-					"rate": billing_details.get("practitioner_charge")
-				})
 
 	return encounters_to_invoice
 

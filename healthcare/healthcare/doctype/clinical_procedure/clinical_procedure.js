@@ -166,6 +166,14 @@ frappe.ui.form.on('Clinical Procedure', {
 				"reference_name": frm.doc.name}
 					frappe.new_doc("Clinical Note");
 		},__('Create'));
+		frm.set_query('insurance_policy', function() {
+			return {
+				filters: {
+					'patient': frm.doc.patient,
+					'docstatus': 1
+				}
+			};
+		});
 
 	},
 
@@ -481,19 +489,26 @@ let show_procedure_templates = function(frm, result){
 				</div>\
 			</div><hr>',
 			{ procedure_template: y[0], encounter: y[1], invoiced: y[2], practitioner: y[3], date: y[4],
-				name: y[5]})
+				name: y[5], insurance_policy:(y[6]?y[6]:''), insurance_payor:y[7]})
 			).appendTo(html_field);
 			row.find("a").click(function() {
 			frm.doc.procedure_template = $(this).attr("data-procedure-template");
 			frm.doc.service_request = $(this).attr('data-name');
 			frm.doc.practitioner = $(this).attr("data-practitioner");
+			if($(this).attr("data-insurance-policy")){
+				frm.doc.insurance_policy = $(this).attr("data-insurance-policy");
+				frm.doc.insurance_payor = $(this).attr("data-insurance-payor");
+				frm.set_df_property("insurance_policy", "read_only", 1);
+			}
 			frm.doc.invoiced = 0;
-			if ($(this).attr('data-invoiced') === "Invoiced") {
+			if ($(this).attr('data-invoiced') === 1) {
 				frm.doc.invoiced = 1;
 			}
 			frm.refresh_field("procedure_template");
 			frm.refresh_field("service_request");
 			frm.refresh_field("practitioner");
+			frm.refresh_field('insurance_policy');
+			frm.refresh_field("insurance_payor");
 			frm.refresh_field('invoiced');
 			d.hide();
 			return false;

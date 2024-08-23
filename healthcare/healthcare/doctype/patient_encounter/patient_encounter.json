@@ -37,6 +37,12 @@
   "physical_examination",
   "diagnosis",
   "diagnosis_in_print",
+  "insurance_section",
+  "insurance_policy",
+  "insurance_coverage",
+  "column_break_t78vq",
+  "insurance_payor",
+  "coverage_status",
   "codification",
   "codification_table",
   "sb_drug_prescription",
@@ -398,7 +404,46 @@
   {
    "link_doctype": "Treatment Counselling",
    "link_fieldname": "admission_encounter"
+  },
+ {
+   "depends_on": "appointment_type",
+   "fieldname": "insurance_section",
+   "fieldtype": "Section Break",
+   "label": "Insurance"
+  },
+  {
+   "depends_on": "appointment_type",
+   "fieldname": "insurance_policy",
+   "fieldtype": "Link",
+   "label": "Insurance Policy",
+   "options": "Patient Insurance Policy"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "insurance_coverage",
+   "fieldtype": "Link",
+   "label": "Insurance Coverage",
+   "options": "Patient Insurance Coverage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_t78vq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "insurance_policy.insurance_payor",
+   "fieldname": "insurance_payor",
+   "fieldtype": "Link",
+   "label": "Insurance Payor",
+   "options": "Insurance Payor"
+  },
+  {
+   "fetch_from": "insurance_coverage.status",
+   "fieldname": "coverage_status",
+   "fieldtype": "Data",
+   "label": "Claim Status"
   }
+
  ],
  "modified": "2023-11-07 18:03:12.793649",
  "modified_by": "Administrator",

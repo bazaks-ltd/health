@@ -19,6 +19,8 @@ from healthcare.healthcare.doctype.service_request.service_request import (
 )
 from healthcare.healthcare.utils import validate_nursing_tasks
 
+from healthcare.healthcare.doctype.service_request.service_request import update_service_request_status
+
 
 class ClinicalProcedure(Document):
 	def validate(self):
@@ -356,7 +358,7 @@ def get_procedure_prescribed(patient, encounter=False):
 	return (
 		frappe.qb.from_(hso)
 		.select(
-			hso.template_dn, hso.order_group, hso.billing_status, hso.practitioner, hso.order_date, hso.name
+			hso.template_dn, hso.order_group, hso.billing_status, hso.practitioner, hso.order_date, hso.name, hso.insurance_policy, hso.insurance_payor
 		)
 		.where(hso.patient == patient)
 		.where(hso.status != "completed-Request Status")

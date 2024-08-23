@@ -13,6 +13,9 @@
   "invoiced",
   "column_break_flty",
   "scheduled_billing_time"
+  "column_break_axb33",
+  "insurance_coverage",
+  "coverage_status"
  ],
  "fields": [
   {
@@ -64,6 +67,24 @@
    "fieldname": "scheduled_billing_time",
    "fieldtype": "Datetime",
    "label": "Scheduled Billing Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_axb33",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "insurance_coverage",
+   "fieldtype": "Link",
+   "label": "Insurance Coverage",
+   "options": "Patient Insurance Coverage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "coverage_status",
+   "fieldtype": "Select",
+   "label": "Claim Status",
+   "options": "\nPending\nApproved\nRejected\nInvoiced",
    "read_only": 1
   }
  ],

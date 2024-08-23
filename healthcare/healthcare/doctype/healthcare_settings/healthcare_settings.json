@@ -421,6 +421,11 @@
   {
    "fieldname": "column_break_bkvx",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "naming_series_for_journal_entry",
+   "fieldtype": "Select",
+   "label": "Naming Series for Insurance Coverage Journal Entry"
   }
  ],
  "issingle": 1,

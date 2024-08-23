@@ -13,6 +13,9 @@ from healthcare.healthcare.doctype.service_request.service_request import (
 	update_service_request_status,
 )
 
+from frappe.utils import getdate, cstr, get_link_to_form
+from healthcare.healthcare.doctype.service_request.service_request import update_service_request_status
+
 
 class LabTest(Document):
 	def validate(self):
@@ -97,6 +100,23 @@ class LabTest(Document):
 						),
 						title=_("Mandatory Results"),
 					)
+
+def before_insert(self):
+	if self.service_request:
+		lab_test = frappe.db.exists(
+			"Lab Test",
+			{"service_request": self.service_request, "docstatus": ["!=", 2]},
+		)
+		if lab_test:
+			frappe.throw(
+				_("Lab Test {0} already created from service request {1}").format(
+					frappe.bold(get_link_to_form("Lab Test", lab_test)),
+					frappe.bold(
+						get_link_to_form("Service Request", self.service_request)
+					),
+				),
+				title=_("Already Exist"),
+			)
 
 
 def before_insert(self):

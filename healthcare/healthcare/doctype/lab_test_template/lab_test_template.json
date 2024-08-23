@@ -145,6 +145,25 @@
    "mandatory_depends_on": "eval:doc.is_billable && !doc.link_existing_item"
   },
   {
+   "collapsible": 1,
+   "fieldname": "medical_coding_section",
+   "fieldtype": "Section Break",
+   "label": "Medical Coding"
+  },
+  {
+   "fieldname": "medical_code_standard",
+   "fieldtype": "Link",
+   "label": "Medical Code Standard",
+   "options": "Medical Code Standard"
+  },
+  {
+   "depends_on": "medical_code_standard",
+   "fieldname": "medical_code",
+   "fieldtype": "Link",
+   "label": "Medical Code",
+   "options": "Medical Code"
+  },
+  {
    "depends_on": "eval:doc.lab_test_template_type == 'Single'",
    "fieldname": "section_break_normal",
    "fieldtype": "Section Break",

@@ -1,5 +1,4 @@
 {
- "_liked_by": "[\"Administrator\"]",
  "actions": [],
  "allow_copy": 1,
  "beta": 1,
@@ -47,10 +46,7 @@
   "service_details_section",
   "template_dt",
   "template_dn",
-  "column_break_15",
-  "medical_code_standard",
-  "medical_code",
-  "medical_code_description"
+  "column_break_15"
  ],
  "fields": [
   {
@@ -333,37 +329,12 @@
   {
    "fieldname": "column_break_15",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "medical_code_standard",
-   "fieldtype": "Link",
-   "label": "Medical Code Standard",
-   "no_copy": 1,
-   "options": "Medical Code Standard",
-   "read_only_depends_on": "eval:doc.medical_code"
-  },
-  {
-   "fieldname": "medical_code",
-   "fieldtype": "Link",
-   "label": "Medical Code",
-   "no_copy": 1,
-   "options": "Medical Code",
-   "read_only_depends_on": "eval:doc.medical_code"
-  },
-  {
-   "fetch_from": "medical_code.description",
-   "fetch_if_empty": 1,
-   "fieldname": "medical_code_description",
-   "fieldtype": "Small Text",
-   "label": "Medical Code Description",
-   "no_copy": 1,
-   "read_only_depends_on": "eval:doc.medical_code"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-03-14 11:19:08.226867",
+ "modified": "2024-08-23 23:46:47.833188",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Insurance Claim Coverage",

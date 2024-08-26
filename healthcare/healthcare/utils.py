@@ -109,8 +109,6 @@ def get_appointments_to_invoice(patient, company):
 				}
 			)
 
-			income_account = get_income_account(appointment.practitioner, appointment.company)
-
 			coverage_details = None
 			if appointment.insurance_coverage:
 				coverage_details = frappe.get_cached_value('Patient Insurance Coverage', appointment.insurance_coverage,
@@ -133,13 +131,12 @@ def get_appointments_to_invoice(patient, company):
 						'coverage_qty': coverage_details.qty
 					})
 			else:
-				billing_details = get_service_item_and_practitioner_charge(appointment)
 				appointments_to_invoice.append({
 					'reference_type': 'Patient Appointment',
 					'reference_name': appointment.name,
 					'income_account': income_account,
-					'service': billing_details.get('service_item'),
-					'rate': billing_details.get('practitioner_charge')
+					"service": service_item,
+					"rate": practitioner_charge,
 				})
 	return appointments_to_invoice
 
@@ -500,70 +497,6 @@ def get_therapy_sessions_to_invoice(patient, company):
 				)
 
 	return therapy_sessions_to_invoice
-
-def get_service_requests_to_invoice(patient, company):
-	orders_to_invoice = []
-
-	service_requests = frappe.get_list(
-		'Service Request',
-		fields=['*'],
-		filters={
-			'patient': patient.name,
-			'company': company,
-			'billing_status': ['in', ['Pending', 'Partly Invoiced']],
-			'docstatus': 1
-		}
-	)
-	for service_request in service_requests:
-		item, is_billable = frappe.get_cached_value(service_request.template_dt, service_request.template_dn,
-			['item', 'is_billable'])
-
-		if is_billable:
-			billable_order_qty = service_request.get('quantity', 1) - service_request.get('qty_invoiced', 0)
-
-			coverage_details = None
-			if service_request.insurance_coverage:
-				coverage_details = frappe.get_cached_value('Patient Insurance Coverage', service_request.insurance_coverage,
-					['status', 'coverage', 'discount', 'price_list_rate', 'item_code', 'qty', 'qty_invoiced', 'policy_number', 'coverage_validity_end_date'], as_dict=True)
-
-			if coverage_details and coverage_details.status in ['Approved', 'Partly Invoiced'] and getdate() <= coverage_details.coverage_validity_end_date:
-
-				# billable qty from insurance coverage
-				billable_coverage_qty = coverage_details.get('qty', 1) - coverage_details.get('qty_invoiced', 0)
-
-				orders_to_invoice.append({
-					'reference_type': 'Service Request',
-					'reference_name': service_request.name,
-					'patient_insurance_policy': coverage_details.policy_number,
-					'insurance_coverage': service_request.insurance_coverage,
-					'insurance_payor': service_request.insurance_payor,
-					'service': coverage_details.item_code,
-					'rate': coverage_details.price_list_rate,
-					'coverage_percentage': coverage_details.coverage,
-					'discount_percentage':coverage_details.discount,
-					'qty': min(billable_coverage_qty, billable_order_qty),
-					'coverage_rate': coverage_details.price_list_rate,
-					'coverage_qty': coverage_details.qty
-				})
-				# if order quantity is not fully billed, update billable_order_qty
-				# bill remianing qty as new line without insurance
-				if billable_order_qty > billable_coverage_qty:
-					billable_order_qty = billable_order_qty - billable_coverage_qty
-				else:
-					# order qty fully billed
-					continue
-
-			orders_to_invoice.append({
-				'reference_type': 'Service Request',
-				'reference_name': service_request.name,
-				'service': item,
-				'qty': billable_order_qty
-			})
-
-	return orders_to_invoice
-
-
-
 
 def get_service_requests_to_invoice(patient, company):
 	orders_to_invoice = []
@@ -1614,3 +1547,12 @@ def add_node():
 		args.parent_healthcare_service_unit = None
 
 	frappe.get_doc(args).insert()
+
+
+@frappe.whitelist()
+def get_service_item_and_practitioner_charge(doc):
+	details = get_appointment_billing_item_and_rate(doc)
+	service_item = details.get("service_item")
+	practitioner_charge = details.get("practitioner_charge")
+
+	return {"service_item": service_item, "practitioner_charge": practitioner_charge}

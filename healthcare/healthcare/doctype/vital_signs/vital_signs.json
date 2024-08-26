@@ -110,10 +110,11 @@
   {
    "description": "Presence of a fever (temp &gt; 38.5 \u00b0C/101.3 \u00b0F or sustained temp &gt; 38 \u00b0C/100.4 \u00b0F)",
    "fieldname": "temperature",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "ignore_xss_filter": 1,
    "in_list_view": 1,
-   "label": "Body Temperature"
+   "label": "Body Temperature",
+   "precision": "1"
   },
   {
    "description": "Adults' pulse rate is anywhere between 50 and 80 beats per minute.",
@@ -256,7 +257,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-07 12:14:26.166928",
+ "modified": "2024-08-24 00:24:17.609975",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Vital Signs",

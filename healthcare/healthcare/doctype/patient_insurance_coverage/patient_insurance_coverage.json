@@ -1,5 +1,4 @@
 {
- "_liked_by": "[\"Administrator\"]",
  "actions": [],
  "autoname": "naming_series:",
  "beta": 1,
@@ -31,8 +30,6 @@
   "qty",
   "column_break_22",
   "item_code",
-  "medical_code_standard",
-  "medical_code",
   "medical_code_description",
   "coverage_details_section",
   "mode_of_approval",
@@ -228,20 +225,6 @@
    "read_only_depends_on": "eval: doc.template_dt"
   },
   {
-   "fieldname": "medical_code_standard",
-   "fieldtype": "Link",
-   "label": "Medical Code Standard",
-   "options": "Medical Code Standard",
-   "read_only": 1
-  },
-  {
-   "fieldname": "medical_code",
-   "fieldtype": "Link",
-   "label": "Medical Code",
-   "options": "Medical Code",
-   "read_only": 1
-  },
-  {
    "fetch_from": "medical_code.description",
    "fieldname": "medical_code_description",
    "fieldtype": "Small Text",
@@ -416,7 +399,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-14 11:19:52.015881",
+ "modified": "2024-08-23 23:18:16.789398",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient Insurance Coverage",

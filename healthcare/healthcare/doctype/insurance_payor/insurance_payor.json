@@ -1,5 +1,4 @@
 {
- "_liked_by": "[\"Administrator\"]",
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
@@ -17,7 +16,6 @@
   "insurance_claim_credit_days",
   "column_break_3",
   "disabled",
-  "medical_code_standard",
   "image",
   "address_and_contacts_section",
   "address_html",
@@ -61,13 +59,6 @@
    "fieldname": "disabled",
    "fieldtype": "Check",
    "label": "Disabled"
-  },
-  {
-   "description": "Default Medical Code Standard to be used when creating Insurance Claim",
-   "fieldname": "medical_code_standard",
-   "fieldtype": "Link",
-   "label": "Medical Code Standard",
-   "options": "Medical Code Standard"
   },
   {
    "fieldname": "image",
@@ -142,11 +133,10 @@
    "link_fieldname": "insurance_payor"
   }
  ],
- "modified": "2023-03-14 11:19:34.236052",
+ "modified": "2024-08-23 21:36:23.218151",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Insurance Payor",
- "name_case": "Title Case",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

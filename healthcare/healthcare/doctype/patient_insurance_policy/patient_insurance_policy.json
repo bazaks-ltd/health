@@ -1,5 +1,4 @@
 {
- "_liked_by": "[\"Administrator\"]",
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
@@ -23,7 +22,6 @@
   "column_break_8",
   "email",
   "mobile_number",
-  "country",
   "insurance_details_section",
   "insurance_payor",
   "policy_expiry_date",
@@ -125,15 +123,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "patient",
-   "fetch_from": "patient.country",
-   "fieldname": "country",
-   "fieldtype": "Link",
-   "label": "Country",
-   "options": "Country",
-   "read_only": 1
-  },
-  {
    "fieldname": "insurance_details_section",
    "fieldtype": "Section Break",
    "label": "Insurance Details"
@@ -194,11 +183,10 @@
    "link_fieldname": "insurance_policy"
   }
  ],
- "modified": "2023-03-14 11:19:21.409521",
+ "modified": "2024-08-27 18:01:12.858938",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient Insurance Policy",
- "name_case": "Title Case",
  "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [

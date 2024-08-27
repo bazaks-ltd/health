@@ -2,7 +2,7 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:{first_name} {last_name}",
  "creation": "2016-02-23 11:20:53.565119",
  "doctype": "DocType",
  "document_type": "Setup",
@@ -242,7 +242,7 @@
    "label": "Full Name",
    "no_copy": 1,
    "read_only": 1,
-   "search_index": 1
+   "unique": 1
   },
   {
    "fieldname": "naming_series",
@@ -357,11 +357,11 @@
  ],
  "image_field": "image",
  "links": [],
- "modified": "2023-03-04 18:33:25.753648",
+ "modified": "2024-08-27 11:18:28.159916",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

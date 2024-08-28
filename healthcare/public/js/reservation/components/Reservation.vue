@@ -28,11 +28,16 @@ const fetchEvents = () => {
 watch([() => props.resources, () => props.update], () => {
     fetchEvents()
 })
+
+const onEventClicked = (event) => {
+    // frappe.set_route("Form", "Patient Appointment", event.id)
+    window.open(`/app/patient-appointment/${event.id}`, '_blank')
+}
 </script>
 
 <template>
     <div>
-        <VueCal ref="vcal" style="height: 600px" @view-change="fetchEvents" @event-click="event => console.log(event)"
+        <VueCal ref="vcal" style="height: 600px" @view-change="fetchEvents" @event-click="onEventClicked"
             :events="events" :split-days="props.resources" sticky-split-labels :min-cell-width="400"
             :min-split-width="150">
             <template #split-label="{ split, view }">

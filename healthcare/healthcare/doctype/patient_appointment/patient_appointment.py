@@ -25,7 +25,7 @@ from healthcare.healthcare.doctype.healthcare_settings.healthcare_settings impor
 	get_receivable_account,
 )
 from healthcare.healthcare.utils import get_appointment_billing_item_and_rate
-
+from healthcare.healthcare.utils import get_service_item_and_practitioner_charge
 from healthcare.healthcare.doctype.patient_insurance_coverage.patient_insurance_coverage import make_insurance_coverage
 
 
@@ -63,12 +63,8 @@ class PatientAppointment(Document):
 		self.insert_calendar_event()
 
 		if self.insurance_policy and self.appointment_type and not check_fee_validity(self):
-				if frappe.db.get_single_value('Healthcare Settings', 'automate_appointment_invoicing'):
-					#TODO: apply insurance coverage
-					frappe.msgprint(_('Insurance Coverage not created!<br>Not supported as <b>Automate Appointment Invoicing</b> enabled'),
-						alert=True, indicator='warning')
-				else:
-					self.make_insurance_coverage()
+				self.make_insurance_coverage()
+					
 
 	def make_insurance_coverage(self):
 		billing_detail = get_service_item_and_practitioner_charge(self)
@@ -797,8 +793,6 @@ def make_encounter(source_name, target_doc=None):
 					["medical_department", "department"],
 					["patient_sex", "patient_sex"],
 					["invoiced", "invoiced"],
-					["company", "company"],
-					['appointment_type', 'appointment_type'],
 					['insurance_subscription', 'insurance_subscription'],
 					['insurance_claim', 'insurance_claim'],
 
@@ -807,6 +801,7 @@ def make_encounter(source_name, target_doc=None):
 		},
 		target_doc,
 	)
+	doc.status = "Open"
 	return doc
 
 

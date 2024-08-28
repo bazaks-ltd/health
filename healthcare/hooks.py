@@ -242,8 +242,7 @@ global_search_doctypes = {
 		{"doctype": "Prescription Duration", "index": 20},
 		{"doctype": "Prescription Dosage", "index": 21},
 		{"doctype": "Sensitivity", "index": 22},
-		{"doctype": "Complaint", "index": 23},
-		{"doctype": "Medical Code", "index": 24},
+		{"doctype": "Complaint", "index": 23}
 	]
 }
 

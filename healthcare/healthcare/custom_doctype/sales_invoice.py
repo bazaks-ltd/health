@@ -85,7 +85,7 @@ class HealthcareSalesInvoice(SalesInvoice):
 
 			item_line.amount = flt(item_line.rate) * flt(item_line.qty)
 
-			if item_line.insurance_coverage:
+			if item_line.insurance_coverage_amount:
 				item_line.insurance_coverage_amount = flt(item_line.amount) * 0.01 * flt(item_line.coverage_percentage)
 
 		super(SalesInvoice, self).calculate_taxes_and_totals()
@@ -96,13 +96,13 @@ class HealthcareSalesInvoice(SalesInvoice):
 		total_coverage_amount = 0.0
 
 		for item in self.items:
-			if item.amount and item.insurance_coverage:
+			if item.amount and item.insurance_coverage_amount:
 				item.insurance_coverage_amount = item.amount * 0.01 * flt(item.coverage_percentage)
 
 			if item.insurance_coverage_amount and flt(item.insurance_coverage_amount) > 0:
 				total_coverage_amount += flt(item.insurance_coverage_amount)
 
-		self.total_insurance_coverage_amount = total_coverage_amount
+		self.total_insurance_coverage_amount = 1000
 		if self.total_insurance_coverage_amount:
 			self.patient_payable_amount = self.outstanding_amount - self.total_insurance_coverage_amount
 		else:

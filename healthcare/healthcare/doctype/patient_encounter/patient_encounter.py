@@ -377,49 +377,6 @@ class PatientEncounter(Document):
 					order = self.get_order_details(medication, drug, True)
 					order.insert(ignore_permissions=True, ignore_mandatory=True)
 
-	def get_order_details(self, template_doc, line_item, medication_request=False):
-		order = frappe.get_doc({
-			'doctype' : 'Medication Request' if medication_request else 'Service Request',
-			'order_date': self.encounter_date,
-			'order_time': self.encounter_time,
-			'company': self.company,
-			'status': 'Draft',
-			'patient': self.get('patient'),
-			'practitioner': self.practitioner,
-			'order_group': self.name,
-			'sequence': line_item.get('sequence'),
-			'patient_care_type': template_doc.get('patient_care_type'),
-			'intent': line_item.get('intent'),
-			'priority': line_item.get('priority'),
-			'quantity': line_item.get_quantity() if line_item.doctype == 'Drug Prescription' else 1,
-			'dosage': line_item.get('dosage'),
-			'dosage_form': line_item.get('dosage_form'),
-			'period': line_item.get('period'),
-			'expected_date': line_item.get('expected_date'),
-			'as_needed': line_item.get('as_needed'),
-			'staff_role': template_doc.get('staff_role'),
-			'note': line_item.get('note'),
-			'patient_instruction': line_item.get('patient_instruction'),
-			'medical_code': template_doc.get('medical_code'),
-			'medical_code_standard': template_doc.get('medical_code_standard')
-		})
-
-		if template_doc.doctype == 'Lab Test Template':
-			description = template_doc.get('lab_test_description')
-		else:
-			description = template_doc.get('description')
-
-		if medication_request:
-			order.update({
-				'medication': template_doc.name,
-				'number_of_repeats_allowed':  line_item.get('number_of_repeats_allowed')
-				})
-		else:
-			order.update({'template_dt': template_doc.doctype, 'template_dn': template_doc.name})
-
-		order.update({'order_description': description})
-		return order
-
 
 @frappe.whitelist()
 def make_ip_medication_order(source_name, target_doc=None):

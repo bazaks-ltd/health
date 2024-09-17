@@ -3,6 +3,7 @@
 */
 frappe.listview_settings['Patient Appointment'] = {
 	filters: [["status", "=", "Open"]],
+	hide_name_column: true,
 	get_indicator: function(doc) {
 		var colors = {
 			"Open": "orange",
@@ -14,5 +15,22 @@ frappe.listview_settings['Patient Appointment'] = {
 			"Checked Out": "orange"
 		};
 		return [__(doc.status), colors[doc.status], "status,=," + doc.status];
+	},
+	button: {
+		show() {
+			return true;
+			const is_doctor = frappe.user.has_role("Doctor");
+			return is_doctor;
+		},
+		get_description() { },
+		get_label() {
+			return "Begin Consultation";
+		},
+		action(doc) {
+			const { name, patient } = doc;
+			window.open(
+				`/clinic/consultation/?patient=${patient}&appointment=${name}`
+			);
+		}
 	}
 };

@@ -164,7 +164,7 @@ def get_encounters_to_invoice(patient, company):
 						continue
 
 					details = get_appointment_billing_item_and_rate(encounter)
-					service_item = details.get("service_item")
+					service_item = encounter.custom_fee or details.get("service_item")
 					practitioner_charge = details.get("practitioner_charge")
 					income_account = get_income_account(encounter.practitioner, encounter.company)
 
@@ -737,7 +737,7 @@ def post_transfer_journal_entry_and_update_coverage(sales_invoice):
 	but won't be able allow coverage cancel after invoicing. Fix based on feedback
 	'''
 	for item in sales_invoice.items:
-		if not item.insurance_coverage:
+		if not item.insurance_coverage_amount:
 			continue
 
 		from healthcare.healthcare.doctype.insurance_payor.insurance_payor import get_insurance_payor_details

@@ -1,13 +1,14 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:generic_name",
+ "autoname": "format:{common_name} {strength}{strength_uom}",
  "creation": "2020-03-24 15:56:36.583587",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "generic_name",
+  "common_name",
   "medication_class",
   "abbr",
   "national_drug_code",
@@ -207,14 +208,19 @@
    "collapsible": 1,
    "fieldname": "section_break_sbkz",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "common_name",
+   "fieldtype": "Data",
+   "label": "Common Name"
   }
  ],
  "links": [],
- "modified": "2024-06-10 14:14:55.849697",
+ "modified": "2024-08-28 14:02:41.179155",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Medication",
- "naming_rule": "By fieldname",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

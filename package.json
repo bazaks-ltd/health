@@ -1,0 +1,10 @@
+{
+  "name": "healthcare",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Terence Zama <terence.zama@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "vue-cal": "^4.9.0"
+  }
+}

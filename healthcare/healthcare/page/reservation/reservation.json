@@ -1,0 +1,19 @@
+{
+ "content": null,
+ "creation": "2024-08-26 18:07:49.878367",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2024-08-26 18:07:49.878367",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "reservation",
+ "owner": "Administrator",
+ "page_name": "reservation",
+ "roles": [],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Reservation"
+}

@@ -289,3 +289,8 @@ standard_queries = {
 treeviews = [
 	"Healthcare Service Unit",
 ]
+
+
+fixtures = [
+    { 'dt': 'Medication Route', 'filters': [['name', 'like', '%']] },
+]

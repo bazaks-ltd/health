@@ -1,0 +1,138 @@
+[
+ {
+  "description": "Taken by mouth",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.299446",
+  "name": "miepr2cmsj",
+  "route": "Oral (PO)"
+ },
+ {
+  "description": "Placed under the tongue",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.320685",
+  "name": "miep8es5ij",
+  "route": "Sublingual (SL)"
+ },
+ {
+  "description": "Placed between gums and cheek",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.327868",
+  "name": "miep36rb41",
+  "route": "Buccal"
+ },
+ {
+  "description": "Injected into a vein",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.336161",
+  "name": "miepf695fl",
+  "route": "Intravenous (IV)"
+ },
+ {
+  "description": "Injected into a muscle",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.343749",
+  "name": "miep05vuhj",
+  "route": "Intramuscular (IM)"
+ },
+ {
+  "description": "Injected under the skin",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.351502",
+  "name": "miepf2ukam",
+  "route": "Subcutaneous (SC)"
+ },
+ {
+  "description": "Injected into the skin",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.362147",
+  "name": "miepo5tstq",
+  "route": "Intradermal (ID)"
+ },
+ {
+  "description": "Applied directly to the skin",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.369409",
+  "name": "miephmesd6",
+  "route": "Topical"
+ },
+ {
+  "description": "Absorbed through the skin via a patch",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.375565",
+  "name": "miepps6pj1",
+  "route": "Transdermal"
+ },
+ {
+  "description": "Breathed into the lungs through mouth/nose",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.382433",
+  "name": "mieptqscu7",
+  "route": "Inhalation"
+ },
+ {
+  "description": "Sprayed into the nostrils",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.388554",
+  "name": "miepspa0is",
+  "route": "Nasal"
+ },
+ {
+  "description": "Applied to the eyes",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.395558",
+  "name": "miepamen5a",
+  "route": "Ophthalmic"
+ },
+ {
+  "description": "Applied to the ears",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.403169",
+  "name": "mieq3rd6vh",
+  "route": "Otic"
+ },
+ {
+  "description": "Inserted into the rectum",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.409547",
+  "name": "mieqmtopo3",
+  "route": "Rectal"
+ },
+ {
+  "description": "Inserted into the vagina",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.417271",
+  "name": "mieqn88600",
+  "route": "Vaginal"
+ },
+ {
+  "description": "Injected into the spinal canal",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.424254",
+  "name": "mieq89e602",
+  "route": "Intrathecal"
+ },
+ {
+  "description": "Injected into the epidural space of the spine",
+  "docstatus": 0,
+  "doctype": "Medication Route",
+  "modified": "2024-11-07 09:46:23.430708",
+  "name": "mieqmtb9dl",
+  "route": "Epidural"
+ }
+]

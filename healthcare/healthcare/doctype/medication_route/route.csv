@@ -1,0 +1,18 @@
+Route,Description
+Oral (PO),Taken by mouth
+Sublingual (SL),Placed under the tongue
+Buccal,Placed between gums and cheek
+Intravenous (IV),Injected into a vein
+Intramuscular (IM),Injected into a muscle
+Subcutaneous (SC),Injected under the skin
+Intradermal (ID),Injected into the skin
+Topical,Applied directly to the skin
+Transdermal,Absorbed through the skin via a patch
+Inhalation,Breathed into the lungs through mouth/nose
+Nasal,Sprayed into the nostrils
+Ophthalmic,Applied to the eyes
+Otic,Applied to the ears
+Rectal,Inserted into the rectum
+Vaginal,Inserted into the vagina
+Intrathecal,Injected into the spinal canal
+Epidural,Injected into the epidural space of the spine

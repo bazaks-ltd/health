@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:route",
  "creation": "2024-11-07 09:43:17.506302",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -12,7 +13,8 @@
   {
    "fieldname": "route",
    "fieldtype": "Data",
-   "label": "Route"
+   "label": "Route",
+   "unique": 1
   },
   {
    "fieldname": "description",
@@ -22,10 +24,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-07 09:43:54.390750",
+ "modified": "2024-11-07 10:28:37.441974",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Medication Route",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -43,5 +46,6 @@
  ],
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "route"
 }

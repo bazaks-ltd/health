@@ -71,7 +71,9 @@
   "progress_notes",
   "diagnosis_notes",
   "course",
-  "discharge_treatment"
+  "discharge_treatment",
+  "custom_fee",
+  "sales_invoice"
  ],
  "fields": [
   {
@@ -409,74 +411,101 @@
    "label": "PCare"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "chief_complaint",
    "fieldtype": "Data",
    "label": "Chief Complaint"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "past_history",
    "fieldtype": "Data",
    "label": "Past History"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "clinical_examination",
    "fieldtype": "Data",
    "label": "Clinical Examination"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "investigation_done",
    "fieldtype": "Data",
    "label": "Investigation Done"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "provisional_diagnosis",
    "fieldtype": "Data",
    "label": "Provisional Diagnosis"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "treatment",
    "fieldtype": "JSON",
    "label": "Treatment"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "plan",
    "fieldtype": "Data",
    "label": "Plan"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "radiology_request",
    "fieldtype": "JSON",
    "label": "Radiology Request"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "laboratory_request",
    "fieldtype": "JSON",
    "label": "Laboratory Request"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "other_requests",
    "fieldtype": "JSON",
    "label": "Other Requests"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "progress_notes",
    "fieldtype": "Data",
    "label": "Progress notes"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "diagnosis_notes",
    "fieldtype": "Data",
    "label": "Diagnosis Notes"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "course",
    "fieldtype": "Data",
    "label": "Course"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "discharge_treatment",
    "fieldtype": "JSON",
    "label": "Discharge Treatment"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "custom_fee",
+   "fieldtype": "Float",
+   "label": "Custom Fee",
+   "precision": "2"
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "label": "Sales Invoice",
+   "options": "Sales Invoice"
   }
  ],
  "is_submittable": 1,
@@ -486,7 +515,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2024-09-20 13:31:14.544022",
+ "modified": "2024-11-12 10:38:06.561652",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient Encounter",

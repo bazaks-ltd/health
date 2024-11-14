@@ -97,13 +97,13 @@
    "read_only": 1
   },
   {
+   "default": "PAT-.YYYY.-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
-   "options": "HLC-PAT-.YYYY.-",
+   "options": "PAT-.YYYY.-\nHLC-PAT-.YYYY.-",
    "print_hide": 1,
-   "report_hide": 1,
-   "set_only_once": 1
+   "report_hide": 1
   },
   {
    "bold": 1,
@@ -496,7 +496,7 @@
  "image_field": "image",
  "links": [],
  "max_attachments": 50,
- "modified": "2024-11-07 11:18:07.302144",
+ "modified": "2024-11-14 05:59:06.697823",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient",
@@ -559,6 +559,5 @@
  "sort_field": "modified",
  "sort_order": "ASC",
  "states": [],
- "title_field": "patient_name",
  "track_changes": 1
 }

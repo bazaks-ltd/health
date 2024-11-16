@@ -193,6 +193,7 @@
    "options": "\nEmail\nPrint"
   },
   {
+   "allow_in_quick_entry": 1,
    "bold": 1,
    "fieldname": "mobile",
    "fieldtype": "Data",
@@ -200,7 +201,8 @@
    "in_standard_filter": 1,
    "label": "Mobile",
    "no_copy": 1,
-   "options": "Phone"
+   "options": "Phone",
+   "reqd": 1
   },
   {
    "bold": 1,
@@ -496,7 +498,7 @@
  "image_field": "image",
  "links": [],
  "max_attachments": 50,
- "modified": "2024-11-14 05:59:06.697823",
+ "modified": "2024-11-14 11:38:24.176496",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient",

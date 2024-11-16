@@ -413,31 +413,31 @@
   {
    "allow_on_submit": 1,
    "fieldname": "chief_complaint",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "label": "Chief Complaint"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "past_history",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "label": "Past History"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "clinical_examination",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "label": "Clinical Examination"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "investigation_done",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "label": "Investigation Done"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "provisional_diagnosis",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "label": "Provisional Diagnosis"
   },
   {
@@ -449,7 +449,7 @@
   {
    "allow_on_submit": 1,
    "fieldname": "plan",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "label": "Plan"
   },
   {
@@ -473,7 +473,7 @@
   {
    "allow_on_submit": 1,
    "fieldname": "progress_notes",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "label": "Progress notes"
   },
   {
@@ -515,7 +515,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2024-11-12 10:38:06.561652",
+ "modified": "2024-11-16 17:51:59.486133",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient Encounter",

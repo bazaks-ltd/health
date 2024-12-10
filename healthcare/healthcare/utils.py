@@ -136,6 +136,8 @@ def get_encounters_to_invoice(patient, company):
 					details = get_appointment_billing_item_and_rate(encounter)
 					service_item = details.get("service_item")
 					practitioner_charge = details.get("practitioner_charge")
+					if (practitioner_charge == 0):
+						continue
 					income_account = get_income_account(encounter.practitioner, encounter.company)
 
 				encounters_to_invoice.append(
@@ -437,8 +439,8 @@ def get_appointment_billing_item_and_rate(doc):
 	if not service_item:
 		throw_config_service_item(is_inpatient)
 
-	if not practitioner_charge and doc.get("practitioner"):
-		throw_config_practitioner_charge(is_inpatient, doc.practitioner)
+	# if not practitioner_charge and doc.get("practitioner"):
+	# 	throw_config_practitioner_charge(is_inpatient, doc.practitioner)
 
 	if not practitioner_charge and not doc.get("practitioner"):
 		throw_config_appointment_type_charge(is_inpatient, doc.appointment_type)

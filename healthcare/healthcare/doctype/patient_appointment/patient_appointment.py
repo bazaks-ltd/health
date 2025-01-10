@@ -162,13 +162,13 @@ class PatientAppointment(Document):
 						if appointment not in service_unit_appointments
 					]
 
-		if overlapping_appointments:
-			frappe.throw(
-				_("Not allowed, cannot overlap appointment {}").format(
-					frappe.bold(", ".join([appointment["name"] for appointment in overlapping_appointments]))
-				),
-				OverlapError,
-			)
+		# if overlapping_appointments:
+		# 	frappe.throw(
+		# 		_("Not allowed, cannot overlap appointment {}").format(
+		# 			frappe.bold(", ".join([appointment["name"] for appointment in overlapping_appointments]))
+		# 		),
+		# 		OverlapError,
+		# 	)
 
 	def validate_based_on_appointments_for(self):
 		if self.appointment_for:

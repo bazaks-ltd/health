@@ -369,7 +369,7 @@
   {
    "fieldname": "last_name",
    "fieldtype": "Data",
-   "label": "Last Name",
+   "label": "Surname",
    "no_copy": 1
   },
   {
@@ -498,7 +498,7 @@
  "image_field": "image",
  "links": [],
  "max_attachments": 50,
- "modified": "2024-11-14 11:38:24.176496",
+ "modified": "2025-01-15 17:56:02.207300",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient",

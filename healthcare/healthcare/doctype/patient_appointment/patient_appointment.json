@@ -74,8 +74,7 @@
    "label": "Patient",
    "options": "Patient",
    "reqd": 1,
-   "search_index": 1,
-   "set_only_once": 1
+   "search_index": 1
   },
   {
    "fieldname": "appointment_type",
@@ -424,7 +423,7 @@
   }
  ],
  "links": [],
- "modified": "2024-12-20 15:02:27.241813",
+ "modified": "2025-01-17 13:24:23.954254",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient Appointment",

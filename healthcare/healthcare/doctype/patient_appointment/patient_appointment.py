@@ -526,14 +526,18 @@ def cancel_appointment(appointment_id):
 
 	else:
 		fee_validity = manage_fee_validity(appointment)
-		msg = _("Appointment Cancelled.")
-		if fee_validity:
-			msg += _("Fee Validity {0} updated.").format(fee_validity.name)
+		msg = ""
+		# msg = _("Appointment Cancelled.")
+		# if fee_validity:
+		# 	msg += _("Fee Validity {0} updated.").format(fee_validity.name)
 
 	if appointment.event:
-		event_doc = frappe.get_doc("Event", appointment.event)
-		event_doc.status = "Cancelled"
-		event_doc.save()
+		# event_doc = frappe.get_doc("Event", appointment.event, ignore_permissions=True)
+		# event_doc.status = "Cancelled"
+		# event_doc.save()
+		frappe.db.sql("update `tabEvent` set status='Cancelled' where name='{0}'".format(appointment.event))
+		frappe.db.commit()
+		msg = _("Appointment Cancelled.")
 
 	frappe.msgprint(msg)
 
@@ -833,7 +837,7 @@ def get_events(start, end, filters=None):
 	data = frappe.db.sql(
 		"""
 		select
-		`tabPatient Appointment`.name, `tabPatient Appointment`.patient,
+		`tabPatient Appointment`.name, CONCAT(`tabPatient Appointment`.patient_name, ' with ', `tabPatient Appointment`.practitioner) as title,
 		`tabPatient Appointment`.practitioner, `tabPatient Appointment`.status,
 		`tabPatient Appointment`.duration,
 		timestamp(`tabPatient Appointment`.appointment_date, `tabPatient Appointment`.appointment_time) as 'start',
@@ -903,3 +907,22 @@ def update_appointment_status():
 		appointment_doc = frappe.get_doc("Patient Appointment", appointment.name)
 		appointment_doc.set_status()
 		appointment_doc.save()
+
+
+@frappe.whitelist()
+def update_patient_info(patient, docname):
+	patient_appointment =  frappe.get_doc("Patient Appointment",docname)
+	patient = frappe.get_doc("Patient", patient)
+	# patient_appointment.patient_name = patient.patient_name;
+	# patient_appointment.save()
+
+	print(">>> age", patient.dob)
+	print(">>> age", patient.age)
+	
+	frappe.db.sql("""
+		UPDATE `tabPatient Appointment`
+		SET patient_name = %s, patient_sex = %s, patient_age = %s, title = %s
+		WHERE name = %s
+	""", (patient.patient_name, patient.sex, patient.get_age(), f"{patient.patient_name} with {patient_appointment.practitioner_name or patient_appointment.practitioner}", docname))
+
+	frappe.db.commit()

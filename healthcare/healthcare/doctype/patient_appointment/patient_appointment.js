@@ -95,6 +95,16 @@ frappe.ui.form.on("Patient Appointment", {
       frm.add_custom_button(__("Reschedule"), function () {
         check_and_set_availability(frm);
       });
+      frm.add_custom_button(__("Update Patient Info"), function () {
+        frappe.call({
+          method:
+            "healthcare.healthcare.doctype.patient_appointment.patient_appointment.update_patient_info",
+          args: { patient: frm.doc.patient, docname: frm.doc.name },
+          callback: function (r) {
+            frm.reload_doc();
+          },
+        });
+      });
 
       if (frm.doc.procedure_template) {
         frm.add_custom_button(

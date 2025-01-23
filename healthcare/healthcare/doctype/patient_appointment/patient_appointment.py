@@ -915,9 +915,6 @@ def update_patient_info(patient, docname):
 	patient = frappe.get_doc("Patient", patient)
 	# patient_appointment.patient_name = patient.patient_name;
 	# patient_appointment.save()
-
-	print(">>> age", patient.dob)
-	print(">>> age", patient.age)
 	
 	frappe.db.sql("""
 		UPDATE `tabPatient Appointment`
@@ -926,3 +923,19 @@ def update_patient_info(patient, docname):
 	""", (patient.patient_name, patient.sex, patient.get_age(), f"{patient.patient_name} with {patient_appointment.practitioner_name or patient_appointment.practitioner}", docname))
 
 	frappe.db.commit()
+
+
+@frappe.whitelist()
+def check_in_patient(patient, docname):
+	patient_appointment =  frappe.get_doc("Patient Appointment",docname)
+	patient = frappe.get_doc("Patient", patient)
+
+	frappe.db.sql("""
+		UPDATE `tabPatient Appointment`
+		SET status = "Checked In"
+		WHERE name = %s
+	""", (docname))
+
+	frappe.db.commit()
+
+

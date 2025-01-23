@@ -105,6 +105,16 @@ frappe.ui.form.on("Patient Appointment", {
           },
         });
       });
+      frm.add_custom_button(__("Check In"), function () {
+        frappe.call({
+          method:
+            "healthcare.healthcare.doctype.patient_appointment.patient_appointment.check_in_patient",
+          args: { patient: frm.doc.patient, docname: frm.doc.name },
+          callback: function (r) {
+            frm.reload_doc();
+          },
+        });
+      });
 
       if (frm.doc.procedure_template) {
         frm.add_custom_button(

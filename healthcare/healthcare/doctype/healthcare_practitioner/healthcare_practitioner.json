@@ -53,7 +53,16 @@
   "email_id",
   "column_break_26",
   "practitioner_primary_address",
-  "primary_address"
+  "primary_address",
+  "pcare_tab",
+  "outpatient_section",
+  "op_chargeable",
+  "op_perc_charge",
+  "inpatient_section",
+  "ip_chargeable",
+  "ip_perc_charge",
+  "radiology_section",
+  "percentage_charge"
  ],
  "fields": [
   {
@@ -359,11 +368,61 @@
    "fieldname": "speciality",
    "fieldtype": "Data",
    "label": "Speciality"
+  },
+  {
+   "fieldname": "pcare_tab",
+   "fieldtype": "Tab Break",
+   "label": "Pcare"
+  },
+  {
+   "fieldname": "outpatient_section",
+   "fieldtype": "Section Break",
+   "label": "Outpatient"
+  },
+  {
+   "default": "0",
+   "fieldname": "op_chargeable",
+   "fieldtype": "Check",
+   "label": "Is Chargeable"
+  },
+  {
+   "default": "10",
+   "fieldname": "op_perc_charge",
+   "fieldtype": "Percent",
+   "label": "Percentage Charge"
+  },
+  {
+   "fieldname": "inpatient_section",
+   "fieldtype": "Section Break",
+   "label": "Inpatient"
+  },
+  {
+   "default": "0",
+   "fieldname": "ip_chargeable",
+   "fieldtype": "Check",
+   "label": "is Chargeable"
+  },
+  {
+   "default": "5",
+   "fieldname": "ip_perc_charge",
+   "fieldtype": "Percent",
+   "label": "Percentage Charge"
+  },
+  {
+   "fieldname": "radiology_section",
+   "fieldtype": "Section Break",
+   "label": "Radiology"
+  },
+  {
+   "default": "5",
+   "fieldname": "percentage_charge",
+   "fieldtype": "Percent",
+   "label": "Percentage Charge"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2024-11-15 19:19:54.725034",
+ "modified": "2025-01-30 15:05:37.192549",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

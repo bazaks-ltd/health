@@ -62,7 +62,7 @@
   "ip_chargeable",
   "ip_perc_charge",
   "radiology_section",
-  "percentage_charge"
+  "rad_perc_charge"
  ],
  "fields": [
   {
@@ -417,14 +417,14 @@
   },
   {
    "default": "5",
-   "fieldname": "percentage_charge",
+   "fieldname": "rad_perc_charge",
    "fieldtype": "Percent",
    "label": "Percentage Charge"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-01-30 15:12:24.237094",
+ "modified": "2025-01-30 15:45:45.794303",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

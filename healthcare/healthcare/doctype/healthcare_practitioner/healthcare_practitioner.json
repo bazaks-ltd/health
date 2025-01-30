@@ -387,6 +387,7 @@
   },
   {
    "default": "10",
+   "depends_on": "eval: !!doc.op_chargeable",
    "fieldname": "op_perc_charge",
    "fieldtype": "Percent",
    "label": "Percentage Charge"
@@ -404,6 +405,7 @@
   },
   {
    "default": "5",
+   "depends_on": "eval: !!doc.ip_chargeable",
    "fieldname": "ip_perc_charge",
    "fieldtype": "Percent",
    "label": "Percentage Charge"
@@ -422,7 +424,7 @@
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-01-30 15:05:37.192549",
+ "modified": "2025-01-30 15:12:24.237094",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

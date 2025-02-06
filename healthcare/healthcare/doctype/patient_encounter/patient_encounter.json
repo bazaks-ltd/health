@@ -9,6 +9,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "print_section_tab",
+  "print_html",
+  "section_break_wfej",
+  "print_mc",
+  "print_consultation",
+  "print_treatment",
+  "print_lab",
+  "print_rad",
+  "print_other",
+  "connections_tab",
+  "details_tab",
   "naming_series",
   "title",
   "appointment",
@@ -112,8 +123,10 @@
    "search_index": 1
   },
   {
+   "fetch_from": "patient.patient_name",
    "fieldname": "patient_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Patient Name",
    "read_only": 1
   },
@@ -408,6 +421,7 @@
   {
    "fieldname": "pcare_tab",
    "fieldtype": "Tab Break",
+   "hidden": 1,
    "label": "PCare"
   },
   {
@@ -506,6 +520,79 @@
    "fieldtype": "Link",
    "label": "Sales Invoice",
    "options": "Sales Invoice"
+  },
+  {
+   "fieldname": "print_section_tab",
+   "fieldtype": "Tab Break",
+   "label": "Print Section"
+  },
+  {
+   "fieldname": "print_html",
+   "fieldtype": "HTML",
+   "label": "print html"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "connections_tab",
+   "fieldtype": "Tab Break",
+   "label": "Connections",
+   "show_dashboard": 1
+  },
+  {
+   "fieldname": "section_break_wfej",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "print_mc",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Medical Certificate"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "print_consultation",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Consultation"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "print_treatment",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Treatment"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "print_lab",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Laboratory Request"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "print_rad",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Radiology Request"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "print_other",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Other Test Request"
   }
  ],
  "is_submittable": 1,
@@ -515,7 +602,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2024-11-16 17:51:59.486133",
+ "modified": "2025-02-04 14:29:16.947366",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient Encounter",

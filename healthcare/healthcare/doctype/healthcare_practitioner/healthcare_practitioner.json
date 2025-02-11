@@ -64,7 +64,11 @@
   "ip_chargeable",
   "ip_perc_charge",
   "radiology_section",
-  "rad_perc_charge",
+  "rad_is_chargeable",
+  "mri_perc",
+  "ct_perc",
+  "uss_perc",
+  "xray_perc",
   "bank_details_section",
   "beneficiary_name",
   "bank_account_number",
@@ -427,12 +431,6 @@
    "label": "Radiology"
   },
   {
-   "default": "5",
-   "fieldname": "rad_perc_charge",
-   "fieldtype": "Percent",
-   "label": "Percentage Charge"
-  },
-  {
    "fieldname": "nid",
    "fieldtype": "Data",
    "label": "NID"
@@ -461,11 +459,41 @@
    "fieldname": "bank_account_number",
    "fieldtype": "Data",
    "label": "Bank Account Number"
+  },
+  {
+   "default": "20",
+   "fieldname": "mri_perc",
+   "fieldtype": "Percent",
+   "label": "MRI"
+  },
+  {
+   "default": "20",
+   "fieldname": "ct_perc",
+   "fieldtype": "Percent",
+   "label": "CT "
+  },
+  {
+   "default": "0",
+   "fieldname": "rad_is_chargeable",
+   "fieldtype": "Check",
+   "label": "is_chargeable"
+  },
+  {
+   "default": "40",
+   "fieldname": "uss_perc",
+   "fieldtype": "Percent",
+   "label": "USS"
+  },
+  {
+   "default": "25",
+   "fieldname": "xray_perc",
+   "fieldtype": "Percent",
+   "label": "Xray"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-02-05 11:49:04.259264",
+ "modified": "2025-02-11 12:15:23.093654",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

@@ -211,6 +211,7 @@ def set_ip_child_records(inpatient_record, inpatient_record_child, encounter_chi
 def check_out_inpatient(inpatient_record):
 	if inpatient_record.inpatient_occupancies:
 		for inpatient_occupancy in inpatient_record.inpatient_occupancies:
+			print(">>>> inp", inpatient_occupancy)
 			if inpatient_occupancy.left != 1:
 				inpatient_occupancy.left = True
 				inpatient_occupancy.check_out = now_datetime()

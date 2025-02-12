@@ -42,6 +42,7 @@
   "column_break_18",
   "inpatient_visit_charge_item",
   "inpatient_visit_charge",
+  "ip_items",
   "account_details",
   "default_currency",
   "accounts",
@@ -489,11 +490,17 @@
    "fieldname": "xray_perc",
    "fieldtype": "Percent",
    "label": "Xray"
+  },
+  {
+   "fieldname": "ip_items",
+   "fieldtype": "Table",
+   "label": "Inpatient Visit Items",
+   "options": "Healthcare Practioner IP Items"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-02-11 12:15:23.093654",
+ "modified": "2025-02-12 18:51:21.232958",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

@@ -90,6 +90,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Patient Name",
+   "length": 500,
    "read_only": 1
   },
   {
@@ -440,7 +441,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2025-02-24 15:26:56.548776",
+ "modified": "2025-02-24 15:34:19.455442",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Inpatient Record",

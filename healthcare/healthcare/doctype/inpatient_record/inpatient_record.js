@@ -38,6 +38,8 @@ frappe.ui.form.on("Inpatient Record", {
           discharge_patient(frm);
         });
       }
+    } else {
+      frm.set_value("status", "Admission Scheduled");
     }
 
     frm.add_custom_button(

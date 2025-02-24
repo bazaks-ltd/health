@@ -167,7 +167,6 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Status",
    "options": "Admission Scheduled\nAdmitted\nDischarge Scheduled\nDischarged\nCancelled",
    "read_only": 1
@@ -178,7 +177,6 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Admission Schedule Date",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -445,7 +443,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2025-02-11 04:33:14.818039",
+ "modified": "2025-02-24 14:52:19.889878",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Inpatient Record",

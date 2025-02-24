@@ -70,6 +70,8 @@
   "ct_perc",
   "uss_perc",
   "xray_perc",
+  "tax_section",
+  "exempt_tds",
   "bank_details_section",
   "beneficiary_name",
   "bank_account_number",
@@ -396,7 +398,7 @@
    "label": "Outpatient"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "op_chargeable",
    "fieldtype": "Check",
    "label": "Is Chargeable"
@@ -414,7 +416,7 @@
    "label": "Inpatient"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "ip_chargeable",
    "fieldtype": "Check",
    "label": "is Chargeable"
@@ -496,11 +498,22 @@
    "fieldtype": "Table",
    "label": "Inpatient Visit Items",
    "options": "Healthcare Practioner IP Items"
+  },
+  {
+   "fieldname": "tax_section",
+   "fieldtype": "Section Break",
+   "label": "Tax"
+  },
+  {
+   "default": "0",
+   "fieldname": "exempt_tds",
+   "fieldtype": "Check",
+   "label": "exempt tds"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-02-12 18:51:21.232958",
+ "modified": "2025-02-24 11:59:03.894447",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

@@ -87,10 +87,7 @@
    "fetch_from": "patient.patient_name",
    "fieldname": "patient_name",
    "fieldtype": "Data",
-   "in_filter": 1,
-   "in_global_search": 1,
    "in_list_view": 1,
-   "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Patient Name",
    "read_only": 1
@@ -443,7 +440,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2025-02-24 14:52:19.889878",
+ "modified": "2025-02-24 15:18:27.113436",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Inpatient Record",

@@ -22,6 +22,7 @@
   "residence_phone",
   "office_phone",
   "speciality",
+  "occupation",
   "nid",
   "tan",
   "employee_and_user_details_section",
@@ -70,8 +71,6 @@
   "ct_perc",
   "uss_perc",
   "xray_perc",
-  "tax_section",
-  "exempt_tds",
   "bank_details_section",
   "beneficiary_name",
   "bank_account_number",
@@ -398,7 +397,7 @@
    "label": "Outpatient"
   },
   {
-   "default": "1",
+   "default": "0",
    "fieldname": "op_chargeable",
    "fieldtype": "Check",
    "label": "Is Chargeable"
@@ -416,7 +415,7 @@
    "label": "Inpatient"
   },
   {
-   "default": "1",
+   "default": "0",
    "fieldname": "ip_chargeable",
    "fieldtype": "Check",
    "label": "is Chargeable"
@@ -500,20 +499,14 @@
    "options": "Healthcare Practioner IP Items"
   },
   {
-   "fieldname": "tax_section",
-   "fieldtype": "Section Break",
-   "label": "Tax"
-  },
-  {
-   "default": "0",
-   "fieldname": "exempt_tds",
-   "fieldtype": "Check",
-   "label": "exempt tds"
+   "fieldname": "occupation",
+   "fieldtype": "Data",
+   "label": "Occupation"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-02-24 11:59:03.894447",
+ "modified": "2025-02-25 15:47:43.410802",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

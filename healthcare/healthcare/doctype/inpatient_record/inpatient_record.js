@@ -54,7 +54,56 @@ frappe.ui.form.on("Inpatient Record", {
       },
       __("Create")
     );
+
+    frm.add_custom_button(
+      __("Breakfast Request"),
+      function(){
+        frappe.route_options = {
+          patient: frm.doc.patient,
+          floor: frm.doc.admission_service_unit_type
+        };
+        frappe.new_doc("Breakfast Request");
+      },
+      __("Menu Ordering")
+    );
+
+    frm.add_custom_button(
+      __("Lunch Request"),
+      function(){
+        frappe.route_options = {
+          patient: frm.doc.patient,
+          floor: frm.doc.admission_service_unit_type
+        };
+        frappe.new_doc("Lunch Request")
+      },
+      __("Menu Ordering")
+    );
+
+    frm.add_custom_button(
+      __("Teatime Request"),
+      function(){
+        frappe.route_options = {
+          patient: frm.doc.patient,
+          floor: frm.doc.admission_service_unit_type
+        }
+        frappe.new_doc("Teatime Request")
+      },
+      __("Menu Ordering")
+    )
+
+    frm.add_custom_button(
+      __("Dinner Request"),
+      function(){
+        frappe.route_options = {
+          patient: frm.doc.patient,
+          floor: frm.doc.admission_service_unit_type
+        }
+        frappe.new_doc("Dinner Request")
+      },
+      __("Menu Ordering")
+    )
   },
+
   btn_transfer: function (frm) {
     transfer_patient_dialog(frm);
   },

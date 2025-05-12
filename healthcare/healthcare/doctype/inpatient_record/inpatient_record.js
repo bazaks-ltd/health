@@ -59,7 +59,7 @@ frappe.ui.form.on("Inpatient Record", {
       __("Breakfast Request"),
       function(){
         frappe.route_options = {
-          patient: frm.doc.patient,
+          patient: frm.doc.name,
           floor: frm.doc.admission_service_unit_type
         };
         frappe.new_doc("Breakfast Request");
@@ -71,7 +71,7 @@ frappe.ui.form.on("Inpatient Record", {
       __("Lunch Request"),
       function(){
         frappe.route_options = {
-          patient: frm.doc.patient,
+          patient: frm.doc.name,
           floor: frm.doc.admission_service_unit_type
         };
         frappe.new_doc("Lunch Request")
@@ -83,10 +83,10 @@ frappe.ui.form.on("Inpatient Record", {
       __("Teatime Request"),
       function(){
         frappe.route_options = {
-          patient: frm.doc.patient,
+          patient: frm.doc.name,
           floor: frm.doc.admission_service_unit_type
         }
-        frappe.new_doc("Teatime Request")
+        frappe.new_doc("Tea Time Request")
       },
       __("Menu Ordering")
     )
@@ -95,7 +95,7 @@ frappe.ui.form.on("Inpatient Record", {
       __("Dinner Request"),
       function(){
         frappe.route_options = {
-          patient: frm.doc.patient,
+          patient: frm.doc.name,
           floor: frm.doc.admission_service_unit_type
         }
         frappe.new_doc("Dinner Request")

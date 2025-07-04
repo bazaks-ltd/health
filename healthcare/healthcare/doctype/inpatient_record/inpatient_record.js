@@ -38,6 +38,9 @@ frappe.ui.form.on("Inpatient Record", {
             .append(
               `<div id="inp-room" class="border-black text-center rounded border border-dark"><small><strong>${r}</strong></small></div>`
             );
+          if (frm.doc.status !== "Discharged") {
+            frm.set_value("healthcare_service_unit", r);
+          }
         }
       });
     }
@@ -109,6 +112,9 @@ frappe.ui.form.on("Inpatient Record", {
 
     if (!frm.doc.__islocal) {
       if (frm.doc.status == "Admitted") {
+        frm.add_custom_button(__("Create Medical Certificate"), function () {
+          create_medical_certificate(frm);
+        });
         frm.add_custom_button(__("Schedule Discharge"), function () {
           schedule_discharge(frm);
         });
@@ -943,4 +949,24 @@ function delete_clinical_note(frm, noteName) {
       });
     }
   );
+}
+
+function create_medical_certificate(frm) {
+  // Get patient information
+  let patient_data = {
+    name: frm.doc.patient,
+    patient_name: frm.doc.patient_name,
+    sex: frm.doc.gender || "Male",
+    gender: frm.doc.gender || "Male",
+    encounter_name: frm.doc.name,
+  };
+
+  // Load the medical certificate bundle and create dialog
+  frappe.require("medical_certificate.bundle.js").then(() => {
+    if (window.createMedicalCertificateDialog) {
+      window.createMedicalCertificateDialog(patient_data);
+    } else {
+      frappe.msgprint(__("Medical Certificate component not loaded properly."));
+    }
+  });
 }

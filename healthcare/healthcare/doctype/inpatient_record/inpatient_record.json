@@ -55,7 +55,7 @@
   "inpatient_occupancies",
   "btn_transfer",
   "sb_discharge_details",
-  "discharge_ordered_date",
+  "discharge_ordered_datetime",
   "discharge_practitioner",
   "discharge_encounter",
   "discharge_datetime",
@@ -409,13 +409,6 @@
    "fieldname": "discharge_instructions",
    "fieldtype": "Small Text",
    "label": "Discharge Instructions"
-  },
-  {
-   "fieldname": "discharge_ordered_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Discharge Ordered Date",
-   "read_only": 1
   },
   {
    "collapsible": 1,

@@ -69,7 +69,7 @@ class InpatientRecord(Document):
 
     def validate_dates(self):
         if (getdate(self.expected_discharge) < getdate(self.scheduled_date)) or (
-                getdate(self.discharge_ordered_date) < getdate(
+                getdate(self.discharge_ordered_datetime) < getdate(
                     self.scheduled_date)
         ):
             frappe.throw(
@@ -88,11 +88,11 @@ class InpatientRecord(Document):
 
     def validate_already_scheduled_or_admitted(self):
         query = """
-                        select name, status
-                        from `tabInpatient Record`
-                        where (status = 'Admitted' or status = 'Admission Scheduled')
-                        and name != %(name)s and patient = %(patient)s
-                        """
+			select name, status
+			from `tabInpatient Record`
+			where (status = 'Admitted' or status = 'Admission Scheduled')
+			and name != %(name)s and patient = %(patient)s
+			"""
 
         ip_record = frappe.db.sql(
             query, {"name": self.name, "patient": self.patient}, as_dict=1)
@@ -312,9 +312,6 @@ def discharge_patient(inpatient_record):
     inpatient_record.discharge_datetime = now_datetime()
     inpatient_record.status = "Discharged"
 
-    # Clear the healthcare service unit
-    inpatient_record.healthcare_service_unit = None
-
     inpatient_record.save(ignore_permissions=True)
 
 
@@ -329,11 +326,11 @@ def readmit(inpatient_record):
     """, ("Admitted", inpatient_record.name))
 
     frappe.db.sql(f"""
-                           update `tabInpatient Occupancy` io set `left` = 0 where parent = "{inpatient_record.name}" order by creation limit 1;
-                           """)
+			   update `tabInpatient Occupancy` io set `left` = 0 where parent = "{inpatient_record.name}" order by creation limit 1;
+			   """)
     frappe.db.sql(f"""
-                           update `tabPatient` set inpatient_record = "{inpatient_record.name}", inpatient_status = "Admitted" where name = "{inpatient_record.patient}";
-                           """)
+			   update `tabPatient` set inpatient_record = "{inpatient_record.name}", inpatient_status = "Admitted" where name = "{inpatient_record.patient}";
+			   """)
 
 
 def validate_inpatient_invoicing(inpatient_record):
@@ -350,21 +347,21 @@ def validate_inpatient_invoicing(inpatient_record):
 
         for doctype, docnames in pending_invoices.items():
             formatted_doc_rows += """
-                                <td>{0}</td>
-                                <td>{1}</td>
-                        </tr>""".format(
+				<td>{0}</td>
+				<td>{1}</td>
+			</tr>""".format(
                 doctype, docnames
             )
 
         message += """
-                        <table class='table'>
-                                <thead>
-                                        <th>{0}</th>
-                                        <th>{1}</th>
-                                </thead>
-                                {2}
-                        </table>
-                """.format(
+			<table class='table'>
+				<thead>
+					<th>{0}</th>
+					<th>{1}</th>
+				</thead>
+				{2}
+			</table>
+		""".format(
             _("Healthcare Service"), _("Documents"), formatted_doc_rows
         )
 
@@ -463,11 +460,8 @@ def admit_patient(inpatient_record, service_unit, check_in, expected_discharge=N
     inpatient_record.admitted_datetime = check_in
     inpatient_record.status = "Admitted"
     inpatient_record.expected_discharge = expected_discharge
-    inpatient_record.healthcare_service_unit = service_unit
+
     inpatient_record.set("inpatient_occupancies", [])
-
-    inpatient_record.save()
-
     transfer_patient(inpatient_record, service_unit, check_in)
 
     frappe.db.set_value(
@@ -507,9 +501,9 @@ def get_leave_from(doctype, txt, searchfield, start, page_len, filters):
     docname = filters["docname"]
 
     query = """select io.service_unit
-                from `tabInpatient Occupancy` io, `tabInpatient Record` ir
-                where io.parent = '{docname}' and io.parentfield = 'inpatient_occupancies'
-                and io.left!=1 and io.parent = ir.name"""
+		from `tabInpatient Occupancy` io, `tabInpatient Record` ir
+		where io.parent = '{docname}' and io.parentfield = 'inpatient_occupancies'
+		and io.left!=1 and io.parent = ir.name"""
 
     return frappe.db.sql(
         query.format(

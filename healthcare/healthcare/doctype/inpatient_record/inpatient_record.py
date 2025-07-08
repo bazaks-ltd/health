@@ -288,44 +288,21 @@ def discharge_patient(inpatient_record):
     inpatient_record.save(ignore_permissions=True)
 
 def readmit(inpatient_record):
-    inpatient_record.discharge_datetime = None
-    inpatient_record.expected_discharge = None
-    inpatient_record.status = "Admitted"
-    
-    frappe.db.sql("""
+	inpatient_record.discharge_datetime = None
+	inpatient_record.expected_discharge = None
+
+	frappe.db.sql("""
         UPDATE `tabInpatient Record`
-        SET name = %s, status = %s
-        WHERE patient = %s
-    """, (inpatient_record.name, "Admitted", inpatient_record.patient))
+        SET  status = %s
+        WHERE name = %s
+    """, ( "Admitted", inpatient_record.name))
 
-    readmit_to_last_room(inpatient_record.name, inpatient_record.patient)
-
-def readmit_to_last_room(name, patient_id):
-    
-    ip_doc = frappe.get_doc("Inpatient Record", name)
-
-    last_room = None
-    last_check_out = None
-    for occ in ip_doc.inpatient_occupancies:
-        if occ.left == 1 and occ.check_out:
-            if not last_check_out or occ.check_out > last_check_out:
-                last_check_out = occ.check_out
-                last_room = occ.service_unit
-
-    if not last_room:
-        frappe.throw(_("Could not determine the last occupied room for patient {0}").format(patient_id))
-
-    for occ in ip_doc.inpatient_occupancies:
-        if occ.service_unit == last_room and occ.left == 1:
-            occ.left = 0
-            occ.check_out = None
-            frappe.db.set_value(
-                "Healthcare Service Unit", occ.service_unit, "occupancy_status", "Occupied"
-            )
-            break
-
-    ip_doc.save(ignore_permissions=True)
-
+	frappe.db.sql(f"""
+			   update `tabInpatient Occupancy` io set `left` = 0 where parent = "{inpatient_record.name}" order by creation limit 1;
+			   """)
+	frappe.db.sql(f"""
+			   update `tabPatient` set inpatient_record = "{inpatient_record.name}", inpatient_status = "Admitted" where name = "{inpatient_record.patient}";
+			   """)
 
 def validate_inpatient_invoicing(inpatient_record):
     if frappe.db.get_single_value("Healthcare Settings", "allow_discharge_despite_unbilled_services"):

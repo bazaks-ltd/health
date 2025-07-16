@@ -16,6 +16,17 @@ frappe.ui.form.on("Inpatient Record", {
     }
   },
   refresh: function (frm) {
+    if (!frm.is_dirty() && !frm.doc.__islocal) {
+      let $wrapper = $(frm.fields_dict.initial_encounter_print_html?.wrapper);
+      if ($wrapper.length) {
+        $wrapper.empty();
+        $wrapper.append(
+          `<div id="initial-encounter-print-container" class="d-flex justify-content-center"></div>`
+        );
+        frm.trigger("initial_encounter_print");
+      }
+    }
+
     frappe.db
       .get_value(
         "Pain Rating Score",
@@ -47,21 +58,68 @@ frappe.ui.form.on("Inpatient Record", {
       });
 
     frappe.db
-      .get_value("Insurance MR", { patient: frm.doc.name }, "name")
+      .get_value("Insurance MR", { patient: frm.doc.patient }, "name")
       .then(({ message }) => {
         if (message.name) {
           frm.page
-            .add_inner_button(__("Insurance MR"), function () {
+            .add_inner_button(__("View Insurance MR"), function () {
               frappe.set_route("Form", "Insurance MR", message.name);
             })
             .addClass("inner-group-button");
         } else {
           frm.page
             .add_inner_button(__("Add Insurance MR"), function () {
-              frappe.new_doc("Insurance MR");
+              frappe.db
+                .get_value("Patient", frm.doc.patient, "dob")
+                .then(({ message }) => {
+                  let age = 0;
+                  if (message.dob) {
+                    const today = new Date();
+                    const birthDate = new Date(message.dob);
+                    age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                    // Adjust age if birthday hasn't occurred this year
+                    if (
+                      monthDiff < 0 ||
+                      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+                    ) {
+                      age--;
+                    }
+                  }
+
+                  // Create new Insurance MR document with populated fields
+                  frappe.new_doc("Insurance MR", {
+                    patient: frm.doc.patient,
+                    patient_full_name: frm.doc.patient_name,
+                    age: age,
+                    inpatient_record: frm.doc.name,
+                    admission_date: frm.doc.admitted_datetime,
+                    insurance: frm.doc.inp_insurance,
+                    doctors_name:
+                      frappe.session.user_fullname || frappe.session.user,
+                  });
+                })
+                .catch((err) => {
+                  console.error("Error fetching patient DOB:", err);
+                  // Create Insurance MR with age 0 if DOB fetch fails
+                  frappe.new_doc("Insurance MR", {
+                    patient: frm.doc.patient,
+                    patient_full_name: frm.doc.patient_name,
+                    age: 0,
+                    inpatient_record: frm.doc.name,
+                    admission_date: frm.doc.admitted_datetime,
+                    insurance: frm.doc.inp_insurance,
+                    doctors_name:
+                      frappe.session.user_fullname || frappe.session.user,
+                  });
+                });
             })
             .addClass("inner-group-button");
         }
+      })
+      .catch((err) => {
+        console.error("Error checking existing Insurance MR:", err);
       });
 
     frappe.db
@@ -157,5 +215,26 @@ frappe.ui.form.on("Inpatient Record", {
     frappe.new_doc("Pain Rating Score", {
       patient: frm.doc.patient,
     });
+  },
+
+  initial_encounter_print(frm) {
+    if (frm.doc.initial_encounter_json) {
+      const print_container = $("#initial-encounter-print-container");
+      const btn = $(
+        '<button class="btn btn-primary">Print Initial Encounter</button>'
+      );
+      print_container.append(btn);
+      btn.on("click", function () {
+        window.open(
+          "/printview?doctype=" +
+            "Inpatient Record" +
+            "&name=" +
+            frm.doc.name +
+            "&format=" +
+            "PC Initial Encounter",
+          "_blank"
+        );
+      });
+    }
   },
 });

@@ -54,6 +54,8 @@
   "sb_inpatient_occupancy",
   "inpatient_occupancies",
   "btn_transfer",
+  "doctors_visit_section",
+  "table_sqmq",
   "sb_discharge_details",
   "discharge_ordered_datetime",
   "discharge_practitioner",
@@ -546,23 +548,33 @@
    "fieldtype": "HTML"
   },
   {
-    "fieldname": "inp_insurance",
-    "fieldtype": "Link",
-    "label": "INP Insurance",
-    "options": "Inpatient Insurance"
-   },
-   {
-    "fieldname": "healthcare_service_unit",
-    "fieldtype": "Data",
-    "hidden": 1,
-    "label": "Healthcare Service Unit"
-   },
+   "fieldname": "inp_insurance",
+   "fieldtype": "Link",
+   "label": "INP Insurance",
+   "options": "Inpatient Insurance"
+  },
+  {
+   "fieldname": "healthcare_service_unit",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Healthcare Service Unit"
+  },
   {
    "fieldname": "discharge_ordered_datetime",
    "fieldtype": "Datetime",
    "in_list_view": 1,
    "label": "Discharge Ordered Date",
    "read_only": 1
+  },
+  {
+   "fieldname": "doctors_visit_section",
+   "fieldtype": "Section Break",
+   "label": "Doctor's Visit"
+  },
+  {
+   "fieldname": "table_sqmq",
+   "fieldtype": "Table",
+   "options": "Doctor Visit"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -572,7 +584,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2025-07-05 11:34:07.190989",
+ "modified": "2025-07-16 11:19:04.169721",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Inpatient Record",

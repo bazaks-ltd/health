@@ -6,8 +6,8 @@
 import frappe
 from frappe import _
 from frappe.contacts.address_and_contact import (
-	delete_contact_and_address,
-	load_address_and_contact,
+    delete_contact_and_address,
+    load_address_and_contact,
 )
 from frappe.model.document import Document
 from frappe.model.naming import append_number_if_name_exists
@@ -29,7 +29,7 @@ class HealthcarePractitioner(Document):
 
     def before_insert(self):
         self.set_default_company()
-    
+
     def validate(self):
         self.set_full_name()
         self.set_default_company()
@@ -72,10 +72,10 @@ class HealthcarePractitioner(Document):
 
         self.validate_practitioner_schedules()
 
-    # def on_update(self):
-    #     if self.user_id:
-    #         frappe.permissions.add_user_permission(
-    #             "Healthcare Practitioner", self.name, self.user_id)
+    def on_update(self):
+        if self.user_id:
+            frappe.permissions.add_user_permission(
+                "Healthcare Practitioner", self.name, self.user_id)
 
     def set_full_name(self):
         if self.last_name:
@@ -83,12 +83,13 @@ class HealthcarePractitioner(Document):
                 filter(None, [self.first_name, self.last_name]))
         else:
             self.practitioner_name = self.first_name
-    
+
     def set_default_company(self):
         """Set default company if not already set"""
         if not self.company_name:
             # Try to get default company from Global Defaults
-            default_company = frappe.db.get_single_value("Global Defaults", "default_company")
+            default_company = frappe.db.get_single_value(
+                "Global Defaults", "default_company")
             if default_company:
                 self.company_name = default_company
             else:
@@ -152,46 +153,47 @@ def validate_service_item(item, msg):
 @frappe.validate_and_sanitize_search_inputs
 def get_practitioner_list(doctype, txt, searchfield, start, page_len, filters=None):
 
-	active_filter = {"status": "Active"}
+    active_filter = {"status": "Active"}
 
-	filters = {**active_filter, **filters} if filters else active_filter
+    filters = {**active_filter, **filters} if filters else active_filter
 
-	fields = ["name", "practitioner_name", "mobile_phone"]
+    fields = ["name", "practitioner_name", "mobile_phone"]
 
-	text_in = {"name": ("like", "%%%s%%" % txt), "practitioner_name": ("like", "%%%s%%" % txt)}
+    text_in = {"name": ("like", "%%%s%%" % txt),
+               "practitioner_name": ("like", "%%%s%%" % txt)}
 
-	return frappe.get_all(
-		"Healthcare Practitioner",
-		fields=fields,
-		filters=filters,
-		or_filters=text_in,
-		start=start,
-		page_length=page_len,
-		order_by="name, practitioner_name",
-		as_list=1,
-	)
+    return frappe.get_all(
+        "Healthcare Practitioner",
+        fields=fields,
+        filters=filters,
+        or_filters=text_in,
+        start=start,
+        page_length=page_len,
+        order_by="name, practitioner_name",
+        as_list=1,
+    )
 
 
 @frappe.whitelist()
 def get_supplier_and_user(user_id=None, supplier=None):
-	"""
-	if user_id or supplier is passed, return both supplier and user_id
-	"""
+    """
+    if user_id or supplier is passed, return both supplier and user_id
+    """
 
-	if not user_id and not supplier:
-		return None
+    if not user_id and not supplier:
+        return None
 
-	con = frappe.qb.DocType("Contact")
-	dlink = frappe.qb.DocType("Dynamic Link")
+    con = frappe.qb.DocType("Contact")
+    dlink = frappe.qb.DocType("Dynamic Link")
 
-	supplier_and_user = (
-		frappe.qb.from_(con)
-		.join(dlink)
-		.on(con.name == dlink.parent)
-		.select((con.user).as_("user"), (dlink.link_name).as_("supplier"))
-		.where(dlink.link_doctype == "Supplier")
-		.where((dlink.link_name == supplier) | (con.user == user_id))
-		.run(as_dict=True)
-	)
+    supplier_and_user = (
+        frappe.qb.from_(con)
+        .join(dlink)
+        .on(con.name == dlink.parent)
+        .select((con.user).as_("user"), (dlink.link_name).as_("supplier"))
+        .where(dlink.link_doctype == "Supplier")
+        .where((dlink.link_name == supplier) | (con.user == user_id))
+        .run(as_dict=True)
+    )
 
-	return supplier_and_user[0] if supplier_and_user else None
+    return supplier_and_user[0] if supplier_and_user else None

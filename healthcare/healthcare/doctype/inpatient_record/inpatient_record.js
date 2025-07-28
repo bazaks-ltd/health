@@ -40,6 +40,7 @@ frappe.ui.form.on("Inpatient Record", {
             );
           if (frm.doc.status !== "Discharged") {
             frm.set_value("healthcare_service_unit", r);
+            frm.save();
           }
         }
       });

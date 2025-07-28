@@ -7,11 +7,13 @@ frappe.ui.form.on("Inpatient Record", {
       const initialEncounter = JSON.parse(frm.doc.initial_encounter_json);
       const allergies = initialEncounter.allergies;
       if (allergies) {
-        frappe.msgprint({
-          title: __("Allergies"),
-          message: __(allergies),
-          indicator: "red",
-        });
+        $(".overlay-sidebar").parent().prepend(`
+          <div class="card p-2 border border-danger">
+          <bold class="font-weight-bold h4">Allergies:</bold>
+          <br/>
+          <h5>${allergies} </h5>
+          </div>
+          `);
       }
     }
   },

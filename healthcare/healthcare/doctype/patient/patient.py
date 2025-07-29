@@ -60,6 +60,10 @@ class Patient(Document):
             # update_delivery_note(self)
             # Update inpatient records with new patient information
             # update_inpatient_record(self)
+            # Update radiology requests with new patient information
+            update_radiology_requests(self)
+            # Update consent forms with new patient information
+            update_consent_forms(self)
 
         # Check for email changes and update user email
         if old_doc and old_doc.email != self.email:
@@ -552,6 +556,128 @@ def make_invoice(patient, company):
     item_line.amount = item_line.rate
     sales_invoice.set_missing_values()
     return sales_invoice
+
+
+def update_radiology_requests(doc, method=None):
+    """
+    Update patient information in Radiology Requests when patient details change
+    
+    Updates patient_name, dob, patient_name_report, dob_report and other patient-related fields
+    """
+    try:
+        # Find all radiology requests linked to this patient (including all statuses for testing)
+        radiology_requests = frappe.db.sql("""
+            SELECT name, status FROM `tabRadiology Request`
+            WHERE patient = %s
+        """, doc.name, as_dict=True)
+        
+        if radiology_requests:
+            updated_count = 0
+            for request in radiology_requests:
+                # Update patient information in radiology request
+                # Convert DOB to string format for Data field
+                dob_string = frappe.utils.formatdate(doc.dob, "dd-mm-yyyy") if doc.dob else ""
+                
+                update_data = {
+                    'patient_name': doc.patient_name,
+                    'dob': dob_string,
+                    'patient_name_report': doc.patient_name,
+                    'dob_report': dob_string
+                }
+                
+                # Calculate and update age if DOB exists
+                if doc.dob:
+                    born = frappe.utils.getdate(doc.dob)
+                    age = dateutil.relativedelta.relativedelta(frappe.utils.getdate(), born)
+                    update_data['age'] = str(age.years)
+                
+                # Update the radiology request document
+                radiology_request_doc = frappe.get_doc("Radiology Request", request.name)
+                for field, value in update_data.items():
+                    if hasattr(radiology_request_doc, field):
+                        setattr(radiology_request_doc, field, value)
+                
+                # Save the document to trigger any validations
+                radiology_request_doc.save(ignore_permissions=True)
+                updated_count += 1
+                
+                # Also update any linked radiology reports
+                radiology_reports = frappe.db.sql("""
+                    SELECT name FROM `tabRadiology Report`
+                    WHERE radiology_request = %s
+                """, request.name, as_dict=True)
+                
+                for report in radiology_reports:
+                    report_doc = frappe.get_doc("Radiology Report", report.name)
+                    report_doc.patient_name_report = doc.patient_name
+                    report_doc.dob_report = dob_string
+                    report_doc.save(ignore_permissions=True)
+            
+            frappe.db.commit()
+            
+            frappe.msgprint(
+                _("Updated {0} Radiology Request(s) with new patient information").format(updated_count), 
+                alert=True
+            )
+            
+            return 'valid'
+    except Exception as e:
+        frappe.log_error(f"Error updating radiology requests: {str(e)}")
+        frappe.msgprint(_("Error updating radiology requests. Check error logs."), alert=True)
+        return 'invalid'
+
+
+def update_consent_forms(doc, method=None):
+    """
+    Update patient information in Consent Form Radiology when patient details change
+    
+    Updates patient_surname, patient_name, patient_date_of_birth, patient_gender, patient_nid, patient_full_name
+    """
+    try:
+        # Find all consent forms linked to this patient
+        consent_forms = frappe.db.sql("""
+            SELECT name FROM `tabConsent Form Radiology`
+            WHERE patient = %s
+        """, doc.name, as_dict=True)
+        
+        if consent_forms:
+            updated_count = 0
+            for consent_form in consent_forms:
+                # Convert DOB to string format for Data field
+                dob_string = frappe.utils.formatdate(doc.dob, "dd-mm-yyyy") if doc.dob else ""
+                
+                # Update patient information in consent form
+                update_data = {
+                    'patient_surname': doc.last_name or "",
+                    'patient_name': doc.first_name or "",
+                    'patient_date_of_birth': dob_string,
+                    'patient_gender': doc.sex or "",
+                    'patient_nid': doc.uid or "",
+                    'patient_full_name': doc.patient_name or ""
+                }
+                
+                # Update the consent form document
+                consent_form_doc = frappe.get_doc("Consent Form Radiology", consent_form.name)
+                for field, value in update_data.items():
+                    if hasattr(consent_form_doc, field):
+                        setattr(consent_form_doc, field, value)
+                
+                # Save the document to trigger any validations
+                consent_form_doc.save(ignore_permissions=True)
+                updated_count += 1
+            
+            frappe.db.commit()
+            
+            frappe.msgprint(
+                _("Updated {0} Consent Form(s) with new patient information").format(updated_count), 
+                alert=True
+            )
+            
+            return 'valid'
+    except Exception as e:
+        frappe.log_error(f"Error updating consent forms: {str(e)}")
+        frappe.msgprint(_("Error updating consent forms. Check error logs."), alert=True)
+        return 'invalid'
 
 
 @frappe.whitelist()

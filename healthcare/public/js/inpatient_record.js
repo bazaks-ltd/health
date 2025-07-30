@@ -2,7 +2,7 @@ frappe.ui.form.on("Inpatient Record", {
   // console.log("Inpatient Record >>>>");
 
   // Add custom button for pain rating
-  onload: function (frm) {
+  refresh: function (frm) {
     if (frm.doc.initial_encounter_json) {
       const initialEncounter = JSON.parse(frm.doc.initial_encounter_json);
       const allergies = initialEncounter.allergies;
@@ -16,8 +16,6 @@ frappe.ui.form.on("Inpatient Record", {
           `);
       }
     }
-  },
-  refresh: function (frm) {
     if (!frm.is_dirty() && !frm.doc.__islocal) {
       let $wrapper = $(frm.fields_dict.initial_encounter_print_html?.wrapper);
       if ($wrapper.length) {

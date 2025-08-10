@@ -3,12 +3,15 @@ frappe.ui.form.on("Inpatient Record", {
 
   // Add custom button for pain rating
   refresh: function (frm) {
+    // Clear any existing allergy alerts to prevent duplicates
+    $(".allergy-alert-card").remove();
+
     if (frm.doc.initial_encounter_json) {
       const initialEncounter = JSON.parse(frm.doc.initial_encounter_json);
       const allergies = initialEncounter.allergies;
       if (allergies) {
         $(".overlay-sidebar").parent().prepend(`
-          <div class="card p-2 border border-danger">
+          <div class="card p-2 border border-danger allergy-alert-card">
           <bold class="font-weight-bold h4">Allergies:</bold>
           <br/>
           <h5>${allergies} </h5>
@@ -235,6 +238,21 @@ frappe.ui.form.on("Inpatient Record", {
           "_blank"
         );
       });
+    }
+  },
+
+  onload: function (frm) {
+    // Set up global cleanup on route change - only set once
+    if (!window.allergy_cleanup_registered) {
+      frappe.router.on("change", function () {
+        // console.log(
+        //   "--------------------> route change triggered - clearing allergy alerts"
+        // );
+        setTimeout(function () {
+          $(".allergy-alert-card").remove();
+        }, 100); // Small delay to ensure DOM cleanup happens after route change
+      });
+      window.allergy_cleanup_registered = true;
     }
   },
 });

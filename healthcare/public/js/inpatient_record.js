@@ -1,24 +1,55 @@
 frappe.ui.form.on("Inpatient Record", {
   // console.log("Inpatient Record >>>>");
 
-  // Add custom button for pain rating
-  refresh: function (frm) {
+  // Function to display allergy alert
+  display_allergy_alert: function (frm) {
+    // Clear any existing pending alert timeouts
+    if (frm.allergy_alert_timeout) {
+      clearTimeout(frm.allergy_alert_timeout);
+    }
+
     // Clear any existing allergy alerts to prevent duplicates
     $(".allergy-alert-card").remove();
 
     if (frm.doc.initial_encounter_json) {
-      const initialEncounter = JSON.parse(frm.doc.initial_encounter_json);
-      const allergies = initialEncounter.allergies;
-      if (allergies) {
-        $(".overlay-sidebar").parent().prepend(`
-          <div class="card p-2 border border-danger allergy-alert-card">
-          <bold class="font-weight-bold h4">Allergies:</bold>
-          <br/>
-          <h5>${allergies} </h5>
-          </div>
-          `);
+      try {
+        const initialEncounter = JSON.parse(frm.doc.initial_encounter_json);
+        const allergies = initialEncounter.allergies;
+        if (allergies) {
+          // Use debounced timeout to prevent multiple rapid calls
+          frm.allergy_alert_timeout = setTimeout(() => {
+            // Check if we're still on the same form
+            if (
+              frm.doc.name &&
+              frappe.get_route()[0] === "Form" &&
+              frappe.get_route()[1] === "Inpatient Record"
+            ) {
+              // Double-check no alerts exist before adding
+              if ($(".allergy-alert-card").length === 0) {
+                $(".overlay-sidebar").parent().prepend(`
+                  <div class="card p-2 border border-danger allergy-alert-card">
+                    <bold class="font-weight-bold h4">Allergies:</bold>
+                    <br/>
+                    <h5>${allergies}</h5>
+                  </div>
+                `);
+              }
+            }
+            // Clear the timeout reference
+            frm.allergy_alert_timeout = null;
+          }, 150);
+        }
+      } catch (e) {
+        console.error("Error parsing initial_encounter_json:", e);
       }
     }
+  },
+
+  // Add custom button for pain rating
+  refresh: function (frm) {
+    // Display allergy alert on refresh as well
+    frm.trigger("display_allergy_alert");
+
     if (!frm.is_dirty() && !frm.doc.__islocal) {
       let $wrapper = $(frm.fields_dict.initial_encounter_print_html?.wrapper);
       if ($wrapper.length) {
@@ -242,17 +273,22 @@ frappe.ui.form.on("Inpatient Record", {
   },
 
   onload: function (frm) {
+    // Display allergy alert when form loads
+    frm.trigger("display_allergy_alert");
+
     // Set up global cleanup on route change - only set once
     if (!window.allergy_cleanup_registered) {
       frappe.router.on("change", function () {
-        // console.log(
-        //   "--------------------> route change triggered - clearing allergy alerts"
-        // );
-        setTimeout(function () {
-          $(".allergy-alert-card").remove();
-        }, 100); // Small delay to ensure DOM cleanup happens after route change
+        // Clean up allergy alerts when navigating away
+        $(".allergy-alert-card").remove();
       });
       window.allergy_cleanup_registered = true;
     }
+  },
+
+  // Called when form rendering is complete
+  render_complete: function (frm) {
+    // Also display alert when rendering is complete
+    frm.trigger("display_allergy_alert");
   },
 });

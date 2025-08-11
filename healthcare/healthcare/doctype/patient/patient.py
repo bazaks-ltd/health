@@ -64,6 +64,10 @@ class Patient(Document):
             update_radiology_requests(self)
             # Update consent forms with new patient information
             update_consent_forms(self)
+            # Update OT procedures with new patient information
+            update_otprocedures(self)
+            # Update inpatient records with new patient information
+            update_inpatient_records(self)
 
         # Check for email changes and update user email
         if old_doc and old_doc.email != self.email:
@@ -561,7 +565,7 @@ def make_invoice(patient, company):
 def update_radiology_requests(doc, method=None):
     """
     Update patient information in Radiology Requests when patient details change
-    
+
     Updates patient_name, dob, patient_name_report, dob_report and other patient-related fields
     """
     try:
@@ -570,67 +574,73 @@ def update_radiology_requests(doc, method=None):
             SELECT name, status FROM `tabRadiology Request`
             WHERE patient = %s
         """, doc.name, as_dict=True)
-        
+
         if radiology_requests:
             updated_count = 0
             for request in radiology_requests:
                 # Update patient information in radiology request
                 # Convert DOB to string format for Data field
-                dob_string = frappe.utils.formatdate(doc.dob, "dd-mm-yyyy") if doc.dob else ""
-                
+                dob_string = frappe.utils.formatdate(
+                    doc.dob, "dd-mm-yyyy") if doc.dob else ""
+
                 update_data = {
                     'patient_name': doc.patient_name,
                     'dob': dob_string,
                     'patient_name_report': doc.patient_name,
                     'dob_report': dob_string
                 }
-                
+
                 # Calculate and update age if DOB exists
                 if doc.dob:
                     born = frappe.utils.getdate(doc.dob)
-                    age = dateutil.relativedelta.relativedelta(frappe.utils.getdate(), born)
+                    age = dateutil.relativedelta.relativedelta(
+                        frappe.utils.getdate(), born)
                     update_data['age'] = str(age.years)
-                
+
                 # Update the radiology request document
-                radiology_request_doc = frappe.get_doc("Radiology Request", request.name)
+                radiology_request_doc = frappe.get_doc(
+                    "Radiology Request", request.name)
                 for field, value in update_data.items():
                     if hasattr(radiology_request_doc, field):
                         setattr(radiology_request_doc, field, value)
-                
+
                 # Save the document to trigger any validations
                 radiology_request_doc.save(ignore_permissions=True)
                 updated_count += 1
-                
+
                 # Also update any linked radiology reports
                 radiology_reports = frappe.db.sql("""
                     SELECT name FROM `tabRadiology Report`
                     WHERE radiology_request = %s
                 """, request.name, as_dict=True)
-                
+
                 for report in radiology_reports:
-                    report_doc = frappe.get_doc("Radiology Report", report.name)
+                    report_doc = frappe.get_doc(
+                        "Radiology Report", report.name)
                     report_doc.patient_name_report = doc.patient_name
                     report_doc.dob_report = dob_string
                     report_doc.save(ignore_permissions=True)
-            
+
             frappe.db.commit()
-            
+
             frappe.msgprint(
-                _("Updated {0} Radiology Request(s) with new patient information").format(updated_count), 
+                _("Updated {0} Radiology Request(s) with new patient information").format(
+                    updated_count),
                 alert=True
             )
-            
+
             return 'valid'
     except Exception as e:
         frappe.log_error(f"Error updating radiology requests: {str(e)}")
-        frappe.msgprint(_("Error updating radiology requests. Check error logs."), alert=True)
+        frappe.msgprint(
+            _("Error updating radiology requests. Check error logs."), alert=True)
         return 'invalid'
 
 
 def update_consent_forms(doc, method=None):
     """
     Update patient information in Consent Form Radiology when patient details change
-    
+
     Updates patient_surname, patient_name, patient_date_of_birth, patient_gender, patient_nid, patient_full_name
     """
     try:
@@ -639,13 +649,14 @@ def update_consent_forms(doc, method=None):
             SELECT name FROM `tabConsent Form Radiology`
             WHERE patient = %s
         """, doc.name, as_dict=True)
-        
+
         if consent_forms:
             updated_count = 0
             for consent_form in consent_forms:
                 # Convert DOB to string format for Data field
-                dob_string = frappe.utils.formatdate(doc.dob, "dd-mm-yyyy") if doc.dob else ""
-                
+                dob_string = frappe.utils.formatdate(
+                    doc.dob, "dd-mm-yyyy") if doc.dob else ""
+
                 # Update patient information in consent form
                 update_data = {
                     'patient_surname': doc.last_name or "",
@@ -655,28 +666,138 @@ def update_consent_forms(doc, method=None):
                     'patient_nid': doc.uid or "",
                     'patient_full_name': doc.patient_name or ""
                 }
-                
+
                 # Update the consent form document
-                consent_form_doc = frappe.get_doc("Consent Form Radiology", consent_form.name)
+                consent_form_doc = frappe.get_doc(
+                    "Consent Form Radiology", consent_form.name)
                 for field, value in update_data.items():
                     if hasattr(consent_form_doc, field):
                         setattr(consent_form_doc, field, value)
-                
+
                 # Save the document to trigger any validations
                 consent_form_doc.save(ignore_permissions=True)
                 updated_count += 1
-            
+
             frappe.db.commit()
-            
+
             frappe.msgprint(
-                _("Updated {0} Consent Form(s) with new patient information").format(updated_count), 
+                _("Updated {0} Consent Form(s) with new patient information").format(
+                    updated_count),
                 alert=True
             )
-            
+
             return 'valid'
     except Exception as e:
         frappe.log_error(f"Error updating consent forms: {str(e)}")
-        frappe.msgprint(_("Error updating consent forms. Check error logs."), alert=True)
+        frappe.msgprint(
+            _("Error updating consent forms. Check error logs."), alert=True)
+        return 'invalid'
+
+
+def update_otprocedures(doc, method=None):
+    """
+    Update patient information in OT Procedures when patient details change
+
+    Updates patient_name and inpatient_record fields
+    """
+    try:
+        # Find all OT procedures linked to this patient
+        ot_procedures = frappe.db.sql("""
+            SELECT name, status FROM `tabOTProcedure`
+            WHERE patient = %s
+        """, doc.name, as_dict=True)
+
+        if ot_procedures:
+            updated_count = 0
+            for procedure in ot_procedures:
+                # Update patient information in OT procedure
+                update_data = {
+                    'patient_name': doc.patient_name
+                }
+
+                # Update inpatient_record if patient has one
+                if hasattr(doc, 'inpatient_record') and doc.inpatient_record:
+                    update_data['inpatient_record'] = doc.inpatient_record
+
+                # Update the OT procedure document
+                ot_procedure_doc = frappe.get_doc(
+                    "OTProcedure", procedure.name)
+                for field, value in update_data.items():
+                    if hasattr(ot_procedure_doc, field):
+                        setattr(ot_procedure_doc, field, value)
+
+                # Save the document to trigger any validations
+                ot_procedure_doc.save(ignore_permissions=True)
+                updated_count += 1
+
+            frappe.db.commit()
+
+            frappe.msgprint(
+                _("Updated {0} OT Procedure(s) with new patient information").format(
+                    updated_count),
+                alert=True
+            )
+
+            return 'valid'
+    except Exception as e:
+        frappe.log_error(f"Error updating OT procedures: {str(e)}")
+        frappe.msgprint(
+            _("Error updating OT procedures. Check error logs."), alert=True)
+        return 'invalid'
+
+
+def update_inpatient_records(doc, method=None):
+    """
+    Update patient information in Inpatient Records when patient details change
+
+    Updates patient_name, gender, blood_group, dob, mobile, email, phone
+    """
+    try:
+        # Find all inpatient records linked to this patient
+        inpatient_records = frappe.db.sql("""
+            SELECT name, status FROM `tabInpatient Record`
+            WHERE patient = %s
+            AND status IN ('Admission Scheduled', 'Admitted', 'Discharge Scheduled')
+        """, doc.name, as_dict=True)
+
+        if inpatient_records:
+            updated_count = 0
+            for record in inpatient_records:
+                # Update patient information in inpatient record
+                update_data = {
+                    'patient_name': doc.patient_name,
+                    'gender': doc.sex,
+                    'blood_group': doc.blood_group,
+                    'dob': doc.dob,
+                    'mobile': doc.mobile,
+                    'email': doc.email,
+                    'phone': doc.phone
+                }
+
+                # Update the inpatient record document
+                inpatient_record_doc = frappe.get_doc(
+                    "Inpatient Record", record.name)
+                for field, value in update_data.items():
+                    if hasattr(inpatient_record_doc, field):
+                        setattr(inpatient_record_doc, field, value)
+
+                # Save the document to trigger any validations
+                inpatient_record_doc.save(ignore_permissions=True)
+                updated_count += 1
+
+            frappe.db.commit()
+
+            frappe.msgprint(
+                _("Updated {0} Inpatient Record(s) with new patient information").format(
+                    updated_count),
+                alert=True
+            )
+
+            return 'valid'
+    except Exception as e:
+        frappe.log_error(f"Error updating inpatient records: {str(e)}")
+        frappe.msgprint(
+            _("Error updating inpatient records. Check error logs."), alert=True)
         return 'invalid'
 
 

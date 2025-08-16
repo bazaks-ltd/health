@@ -309,6 +309,9 @@ def discharge_patient(inpatient_record):
 
     # validate_incompleted_service_requests(inpatient_record)
 
+    # Check out patient from all occupied service units
+    check_out_inpatient(inpatient_record)
+
     inpatient_record.discharge_datetime = now_datetime()
     inpatient_record.status = "Discharged"
 
@@ -334,6 +337,13 @@ def readmit(inpatient_record):
     frappe.db.sql(f"""
 			   update `tabPatient` set inpatient_record = "{inpatient_record.name}", inpatient_status = "Admitted" where name = "{inpatient_record.patient}";
 			   """)
+
+    # Set the healthcare service unit back to occupied
+    if inpatient_record.inpatient_occupancies:
+        for inpatient_occupancy in inpatient_record.inpatient_occupancies:
+            if inpatient_occupancy.left == 1:  # If patient was discharged from this room
+                frappe.db.set_value(
+                    "Healthcare Service Unit", inpatient_occupancy.service_unit, "occupancy_status", "Occupied")
 
 
 def validate_inpatient_invoicing(inpatient_record):

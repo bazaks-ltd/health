@@ -27,8 +27,12 @@ class HealthcarePractitioner(Document):
         if frappe.db.exists("Healthcare Practitioner", self.name):
             self.name = append_number_if_name_exists("Contact", self.name)
 
+    def before_insert(self):
+        self.set_default_company()
+
     def validate(self):
         self.set_full_name()
+        self.set_default_company()
         validate_party_accounts(self)
         if self.inpatient_visit_charge_item:
             validate_service_item(
@@ -68,9 +72,10 @@ class HealthcarePractitioner(Document):
 
         self.validate_practitioner_schedules()
 
-    # def on_update(self):
-    # 	if self.user_id:
-    # 		frappe.permissions.add_user_permission("Healthcare Practitioner", self.name, self.user_id)
+    def on_update(self):
+        if self.user_id:
+            frappe.permissions.add_user_permission(
+                "Healthcare Practitioner", self.name, self.user_id)
 
     def set_full_name(self):
         if self.last_name:
@@ -78,6 +83,20 @@ class HealthcarePractitioner(Document):
                 filter(None, [self.first_name, self.last_name]))
         else:
             self.practitioner_name = self.first_name
+
+    def set_default_company(self):
+        """Set default company if not already set"""
+        if not self.company_name:
+            # Try to get default company from Global Defaults
+            default_company = frappe.db.get_single_value(
+                "Global Defaults", "default_company")
+            if default_company:
+                self.company_name = default_company
+            else:
+                # If no default company, get the first company
+                companies = frappe.get_all("Company", limit=1)
+                if companies:
+                    self.company_name = companies[0].name
 
     def validate_practitioner_schedules(self):
         for practitioner_schedule in self.practitioner_schedules:

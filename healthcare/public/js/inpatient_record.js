@@ -1,21 +1,66 @@
 frappe.ui.form.on("Inpatient Record", {
   // console.log("Inpatient Record >>>>");
 
-  // Add custom button for pain rating
-  onload: function (frm) {
+  // Function to display allergy alert
+  display_allergy_alert: function (frm) {
+    // Clear any existing pending alert timeouts
+    if (frm.allergy_alert_timeout) {
+      clearTimeout(frm.allergy_alert_timeout);
+    }
+
+    // Clear any existing allergy alerts to prevent duplicates
+    $(".allergy-alert-card").remove();
+
     if (frm.doc.initial_encounter_json) {
-      const initialEncounter = JSON.parse(frm.doc.initial_encounter_json);
-      const allergies = initialEncounter.allergies;
-      if (allergies) {
-        frappe.msgprint({
-          title: __("Allergies"),
-          message: __(allergies),
-          indicator: "red",
-        });
+      try {
+        const initialEncounter = JSON.parse(frm.doc.initial_encounter_json);
+        const allergies = initialEncounter.allergies;
+        if (allergies) {
+          // Use debounced timeout to prevent multiple rapid calls
+          frm.allergy_alert_timeout = setTimeout(() => {
+            // Check if we're still on the same form
+            if (
+              frm.doc.name &&
+              frappe.get_route()[0] === "Form" &&
+              frappe.get_route()[1] === "Inpatient Record"
+            ) {
+              // Double-check no alerts exist before adding
+              if ($(".allergy-alert-card").length === 0) {
+                $(".overlay-sidebar").parent().prepend(`
+                  <div class="card p-2 border border-danger allergy-alert-card">
+                    <bold class="font-weight-bold h4">Allergies:</bold>
+                    <br/>
+                    <h5>${allergies}</h5>
+                  </div>
+                `);
+              }
+            }
+            // Clear the timeout reference
+            frm.allergy_alert_timeout = null;
+          }, 150);
+        }
+      } catch (e) {
+        console.error("Error parsing initial_encounter_json:", e);
       }
     }
   },
+
+  // Add custom button for pain rating
   refresh: function (frm) {
+    // Display allergy alert on refresh as well
+    frm.trigger("display_allergy_alert");
+
+    if (!frm.is_dirty() && !frm.doc.__islocal) {
+      let $wrapper = $(frm.fields_dict.initial_encounter_print_html?.wrapper);
+      if ($wrapper.length) {
+        $wrapper.empty();
+        $wrapper.append(
+          `<div id="initial-encounter-print-container" class="d-flex justify-content-center"></div>`
+        );
+        frm.trigger("initial_encounter_print");
+      }
+    }
+
     frappe.db
       .get_value(
         "Pain Rating Score",
@@ -204,5 +249,46 @@ frappe.ui.form.on("Inpatient Record", {
     frappe.new_doc("Pain Rating Score", {
       patient: frm.doc.patient,
     });
+  },
+
+  initial_encounter_print(frm) {
+    if (frm.doc.initial_encounter_json) {
+      const print_container = $("#initial-encounter-print-container");
+      const btn = $(
+        '<button class="btn btn-primary">Print Initial Encounter</button>'
+      );
+      print_container.append(btn);
+      btn.on("click", function () {
+        window.open(
+          "/printview?doctype=" +
+            "Inpatient Record" +
+            "&name=" +
+            frm.doc.name +
+            "&format=" +
+            "PC Initial Encounter",
+          "_blank"
+        );
+      });
+    }
+  },
+
+  onload: function (frm) {
+    // Display allergy alert when form loads
+    frm.trigger("display_allergy_alert");
+
+    // Set up global cleanup on route change - only set once
+    if (!window.allergy_cleanup_registered) {
+      frappe.router.on("change", function () {
+        // Clean up allergy alerts when navigating away
+        $(".allergy-alert-card").remove();
+      });
+      window.allergy_cleanup_registered = true;
+    }
+  },
+
+  // Called when form rendering is complete
+  render_complete: function (frm) {
+    // Also display alert when rendering is complete
+    frm.trigger("display_allergy_alert");
   },
 });

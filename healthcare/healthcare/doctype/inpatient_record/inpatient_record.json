@@ -18,6 +18,7 @@
   "email",
   "phone",
   "inp_insurance",
+  "healthcare_service_unit",
   "column_break_8",
   "company",
   "status",
@@ -53,8 +54,10 @@
   "sb_inpatient_occupancy",
   "inpatient_occupancies",
   "btn_transfer",
+  "doctors_visit_section",
+  "table_sqmq",
   "sb_discharge_details",
-  "discharge_ordered_date",
+  "discharge_ordered_datetime",
   "discharge_practitioner",
   "discharge_encounter",
   "discharge_datetime",
@@ -66,6 +69,7 @@
   "column_break_hjln",
   "nurse_note_html",
   "initial_encounter_tab",
+  "initial_encounter_print_html",
   "initial_encounter_html",
   "requests_tab",
   "prescription_html",
@@ -166,12 +170,14 @@
   {
    "fieldname": "primary_practitioner",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "Healthcare Practitioner (Primary)",
    "options": "Healthcare Practitioner"
   },
   {
    "fieldname": "secondary_practitioner",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "Healthcare Practitioner (Secondary)",
    "options": "Healthcare Practitioner"
   },
@@ -238,6 +244,7 @@
   {
    "fieldname": "admission_practitioner",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "Healthcare Practitioner",
    "options": "Healthcare Practitioner",
    "read_only": 1
@@ -269,6 +276,7 @@
   {
    "fieldname": "discharge_practitioner",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "Healthcare Practitioner",
    "options": "Healthcare Practitioner",
    "read_only": 1
@@ -410,13 +418,6 @@
    "label": "Discharge Instructions"
   },
   {
-   "fieldname": "discharge_ordered_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Discharge Ordered Date",
-   "read_only": 1
-  },
-  {
    "collapsible": 1,
    "depends_on": "eval:!doc.__islocal;",
    "fieldname": "rehabilitation_section",
@@ -556,6 +557,34 @@
    "fieldtype": "Link",
    "label": "INP Insurance",
    "options": "Inpatient Insurance"
+  },
+  {
+   "fieldname": "healthcare_service_unit",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Room"
+  },
+  {
+   "fieldname": "discharge_ordered_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Discharge Ordered Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "doctors_visit_section",
+   "fieldtype": "Section Break",
+   "label": "Doctor's Visit"
+  },
+  {
+   "fieldname": "table_sqmq",
+   "fieldtype": "Table",
+   "options": "Doctor Visit"
+  },
+  {
+   "fieldname": "initial_encounter_print_html",
+   "fieldtype": "HTML"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -565,7 +594,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2025-07-02 22:14:53.561506",
+ "modified": "2025-07-18 16:54:08.880935",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Inpatient Record",

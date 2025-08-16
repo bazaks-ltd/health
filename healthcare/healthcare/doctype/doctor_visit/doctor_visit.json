@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-16 11:16:01.327582",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_chzp",
+  "healthcare_practitioner",
+  "time"
+ ],
+ "fields": [
+  {
+   "fieldname": "healthcare_practitioner",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Healthcare Practitioner",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "default": "Now",
+   "fieldname": "time",
+   "fieldtype": "Datetime",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Time"
+  },
+  {
+   "fieldname": "section_break_chzp",
+   "fieldtype": "Section Break",
+   "ignore_user_permissions": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-08-16 10:12:10.949028",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Doctor Visit",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

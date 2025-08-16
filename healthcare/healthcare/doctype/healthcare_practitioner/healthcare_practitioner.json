@@ -8,6 +8,7 @@
  "document_type": "Setup",
  "engine": "InnoDB",
  "field_order": [
+  "details_tab",
   "basic_details_section",
   "naming_series",
   "first_name",
@@ -23,8 +24,6 @@
   "office_phone",
   "speciality",
   "occupation",
-  "nid",
-  "tan",
   "employee_and_user_details_section",
   "practitioner_type",
   "employee",
@@ -37,13 +36,6 @@
   "appointments",
   "practitioner_schedules",
   "google_calendar",
-  "charges",
-  "op_consulting_charge_item",
-  "op_consulting_charge",
-  "column_break_18",
-  "inpatient_visit_charge_item",
-  "inpatient_visit_charge",
-  "ip_items",
   "account_details",
   "default_currency",
   "accounts",
@@ -51,14 +43,17 @@
   "address_html",
   "column_break_19",
   "contact_html",
+  "primary_address",
   "primary_address_and_contact_detail",
-  "practitioner_primary_contact",
-  "mobile_no",
   "email_id",
+  "practitioner_primary_contact",
   "column_break_26",
   "practitioner_primary_address",
-  "primary_address",
+  "mobile_no",
   "pcare_tab",
+  "personal_details_section",
+  "nid",
+  "tan",
   "outpatient_section",
   "op_chargeable",
   "op_perc_charge",
@@ -71,10 +66,21 @@
   "ct_perc",
   "uss_perc",
   "xray_perc",
+  "company_details",
+  "company_name",
+  "company_name_display",
+  "brn",
   "bank_details_section",
   "beneficiary_name",
   "bank_account_number",
-  "bank"
+  "bank",
+  "charges",
+  "op_consulting_charge_item",
+  "op_consulting_charge",
+  "column_break_18",
+  "inpatient_visit_charge_item",
+  "inpatient_visit_charge",
+  "ip_items"
  ],
  "fields": [
   {
@@ -82,19 +88,22 @@
    "fieldtype": "Data",
    "label": "First Name",
    "no_copy": 1,
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])",
    "reqd": 1
   },
   {
    "fieldname": "middle_name",
    "fieldtype": "Data",
    "label": "Middle Name (Optional)",
-   "no_copy": 1
+   "no_copy": 1,
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])"
   },
   {
    "fieldname": "last_name",
    "fieldtype": "Data",
    "label": "Last Name",
-   "no_copy": 1
+   "no_copy": 1,
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])"
   },
   {
    "fieldname": "image",
@@ -116,6 +125,7 @@
    "fieldtype": "Link",
    "label": "User",
    "options": "User",
+   "read_only_depends_on": "eval: frappe.user.has_role('Medical Secretary')",
    "search_index": 1
   },
   {
@@ -132,7 +142,6 @@
   {
    "fieldname": "department",
    "fieldtype": "Link",
-   "ignore_user_permissions": 1,
    "in_standard_filter": 1,
    "label": "Medical Department",
    "options": "Medical Department"
@@ -155,24 +164,28 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Mobile"
+   "label": "Mobile",
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])"
   },
   {
    "fieldname": "residence_phone",
    "fieldtype": "Data",
-   "label": "Phone (R)"
+   "label": "Phone (R)",
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])"
   },
   {
    "fieldname": "office_phone",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Phone (Office)"
+   "label": "Phone (Office)",
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])"
   },
   {
    "collapsible": 1,
    "fieldname": "appointments",
    "fieldtype": "Section Break",
-   "label": "Appointments"
+   "label": "Appointments",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Medical Secretary\")"
   },
   {
    "fieldname": "practitioner_schedules",
@@ -285,12 +298,14 @@
    "fieldname": "gender",
    "fieldtype": "Link",
    "label": "Gender",
-   "options": "Gender"
+   "options": "Gender",
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])"
   },
   {
    "fieldname": "employee_and_user_details_section",
    "fieldtype": "Section Break",
-   "label": "Employee and User Details"
+   "label": "Employee and User Details",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Medical Secretary\")"
   },
   {
    "fieldname": "column_break_17",
@@ -303,6 +318,7 @@
    "in_list_view": 1,
    "label": "Status",
    "options": "\nActive\nDisabled",
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])",
    "reqd": 1
   },
   {
@@ -384,9 +400,11 @@
   {
    "fieldname": "speciality",
    "fieldtype": "Data",
-   "label": "Speciality"
+   "label": "Speciality",
+   "read_only_depends_on": "eval: !frappe.user.has_role(['Executive Secretary',\n  'Accounts Staff', 'Admin'])"
   },
   {
+   "depends_on": "eval: frappe.user.has_role([\"Admin\", \"Accounts Staff\", \"Executive Secretary\"])",
    "fieldname": "pcare_tab",
    "fieldtype": "Tab Break",
    "label": "Pcare"
@@ -502,11 +520,46 @@
    "fieldname": "occupation",
    "fieldtype": "Data",
    "label": "Occupation"
+  },
+  {
+   "fieldname": "personal_details_section",
+   "fieldtype": "Section Break",
+   "label": "Personal Details"
+  },
+  {
+   "fieldname": "company_details",
+   "fieldtype": "Section Break",
+   "label": "Company Details"
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fetch_from": "company_name.company_name",
+   "fieldname": "company_name_display",
+   "fieldtype": "Data",
+   "label": "Company Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "company_name.brn",
+   "fieldname": "brn",
+   "fieldtype": "Data",
+   "label": "BRN",
+   "read_only": 1
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-07-02 12:17:16.739884",
+ "modified": "2025-08-04 14:18:26.560500",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

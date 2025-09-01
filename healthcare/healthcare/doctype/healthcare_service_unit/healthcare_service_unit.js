@@ -31,6 +31,25 @@ frappe.ui.form.on('Healthcare Service Unit', {
 			frappe.set_route('Tree', 'Healthcare Service Unit');
 		});
 
+		if (frappe.session.user === 'Administrator') {
+			frm.add_custom_button(__('Vacate Room'), function() {
+				frappe.call({
+					method: 'healthcare.healthcare.doctype.healthcare_service_unit.healthcare_service_unit.vacate_room',
+					args: {
+						room_name: frm.doc.name
+					},
+					callback: function(r) {
+						if (r.message) {
+							frappe.msgprint(r.message);
+							if (r.message.includes('vacant')) {
+								frm.reload_doc();
+							}
+						}
+					}
+				});
+			});
+		}
+
 		frm.set_query('warehouse', function() {
 			return {
 				filters: {

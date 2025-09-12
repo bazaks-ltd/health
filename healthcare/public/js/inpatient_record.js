@@ -50,6 +50,24 @@ frappe.ui.form.on("Inpatient Record", {
     // Display allergy alert on refresh as well
     frm.trigger("display_allergy_alert");
 
+    // Initialize history component on page load
+    if (!frm.doc.__islocal && frm.doc.status !== "Cancelled") {
+      frappe.require("pcareui.bundle.js").then(() => {
+        // Only initialize if not already done
+        if (!frm.history_renderer) {
+          frm.history_renderer = new pcare.ui.UIHistoryRender(
+            frm,                    // Form object
+            frm.doc.patient,        // Patient ID
+            "Inpatient Record",     // Document type
+            frm.doc.name,           // Document name
+            "history_html"          // HTML field name where component will render
+          );
+        }
+      }).catch((err) => {
+        console.error("Error loading history component:", err);
+      });
+    }
+
     if (!frm.is_dirty() && !frm.doc.__islocal) {
       let $wrapper = $(frm.fields_dict.initial_encounter_print_html?.wrapper);
       if ($wrapper.length) {
@@ -275,6 +293,14 @@ frappe.ui.form.on("Inpatient Record", {
   onload: function (frm) {
     // Display allergy alert when form loads
     frm.trigger("display_allergy_alert");
+
+    // Set up cleanup for history component when form is destroyed
+    frm.$wrapper.on('remove', function() {
+      if (frm.history_renderer && frm.history_renderer.app) {
+        frm.history_renderer.app.unmount();
+        frm.history_renderer = null;
+      }
+    });
 
     // Set up global cleanup on route change - only set once
     if (!window.allergy_cleanup_registered) {

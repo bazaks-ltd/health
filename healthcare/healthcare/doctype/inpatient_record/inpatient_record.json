@@ -25,6 +25,7 @@
   "scheduled_date",
   "admitted_datetime",
   "expected_discharge",
+  "er_procedure",
   "references",
   "admission_encounter",
   "admission_practitioner",
@@ -585,6 +586,13 @@
   {
    "fieldname": "initial_encounter_print_html",
    "fieldtype": "HTML"
+  },
+  {
+   "depends_on": "eval:doc.er_procedure",
+   "fieldname": "er_procedure",
+   "fieldtype": "Link",
+   "label": "ER Record",
+   "options": "ER Procedure"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -594,7 +602,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2025-07-18 16:54:08.880935",
+ "modified": "2025-09-09 16:41:13.976762",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Inpatient Record",

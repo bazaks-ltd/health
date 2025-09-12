@@ -1,4 +1,6 @@
 import frappe
+from frappe.utils import now_datetime, add_to_date
+from frappe import _
 
 from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
 
@@ -48,3 +50,58 @@ class HealthcareSalesInvoice(SalesInvoice):
 				item_line.medical_department = lab_test.department
 
 		self.set_missing_values(for_validate=True)
+
+
+@frappe.whitelist()
+def get_outpatient_delivery_notes(patient):
+	"""Fetch delivery notes with status 'To Bill' for the patient within 10 hours"""
+	if not patient:
+		frappe.throw(_("Patient is required"))
+	
+	# Get customer linked to patient
+	customer = frappe.db.get_value("Patient", patient, "customer")
+	if not customer:
+		return []
+	
+	# Calculate 10 hours ago from now
+	ten_hours_ago = add_to_date(now_datetime(), hours=-10)
+	current_datetime = now_datetime()
+	
+	# Fetch delivery notes
+	filters = {
+		"customer": customer,
+		"status": "To Bill",
+		"creation": [">=", ten_hours_ago]
+	}
+	
+	delivery_notes = frappe.get_all(
+		"Delivery Note",
+		filters=filters,
+		fields=["name", "customer", "posting_date", "posting_time", "grand_total", "status"],
+		order_by="posting_date desc, posting_time desc"
+	)
+	
+	return delivery_notes
+
+
+@frappe.whitelist()
+def get_delivery_note_items(delivery_note):
+	"""Get items from a delivery note"""
+	if not delivery_note:
+		frappe.throw(_("Delivery Note is required"))
+	
+	dn_doc = frappe.get_doc("Delivery Note", delivery_note)
+	items = []
+	
+	for item in dn_doc.items:
+		items.append({
+			"name": item.name,
+			"item_code": item.item_code,
+			"item_name": item.item_name,
+			"description": item.description,
+			"qty": item.qty,
+			"rate": item.rate,
+			"amount": item.amount
+		})
+	
+	return items

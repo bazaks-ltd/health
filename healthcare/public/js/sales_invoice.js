@@ -1,6 +1,15 @@
 // Healthcare
 frappe.ui.form.on("Sales Invoice", {
   refresh(frm) {
+    if (frm.doc.patient && frm.doc.docstatus === 0 && !frm.doc.inpatient_record) {
+      frappe.db.get_value("Patient", frm.doc.patient, "inpatient_record").then((r) => {
+        if (!r.message.inpatient_record) {
+          frm.add_custom_button(__("Outpatient Bill"), function () {
+            get_outpatient_delivery_notes(frm);
+          }).css("background-color", "red").css("color", "white");
+        }
+      });
+    }
     // if (frm.doc.docstatus === 0 && !frm.doc.is_return) {
     // 	frm.add_custom_button(__('Healthcare Services'), function() {
     // 		frappe.db.get_value("Patient", frm.doc.patient, "customer")
@@ -475,4 +484,182 @@ var add_to_item_line = function (
     }
     frm.refresh_fields();
   }
+};
+
+var get_outpatient_delivery_notes = function (frm) {
+  if (!frm.doc.customer) {
+    frappe.msgprint(__("Please select a customer first"));
+    return;
+  }
+
+  // Fetch outpatient delivery notes using custom query
+  frappe.call({
+    method: "erpnext.controllers.queries.get_outpatient_bills_to_be_billed",
+    args: {
+      doctype: "Delivery Note",
+      txt: "",
+      searchfield: "name",
+      start: 0,
+      page_len: 100,
+      filters: {
+        docstatus: 1,
+        company: frm.doc.company,
+        status: "To Bill",
+        customer: frm.doc.customer,
+      },
+      as_dict: true,
+    },
+    callback: function (r) {
+      if (r.message && r.message.length > 0) {
+        show_outpatient_delivery_notes_dialog(frm, r.message);
+      } else {
+        frappe.msgprint(__("No outpatient delivery notes found for billing"));
+      }
+    },
+  });
+};
+
+var show_outpatient_delivery_notes_dialog = function (frm, delivery_notes) {
+  // Get already added delivery notes for display
+  let existing_dns = [];
+  frm.doc.items.forEach(item => {
+    if (item.delivery_note && !existing_dns.includes(item.delivery_note)) {
+      existing_dns.push(item.delivery_note);
+    }
+  });
+
+  var dialog = new frappe.ui.Dialog({
+    title: __("Outpatient Delivery Notes"),
+    fields: [
+      { fieldtype: "HTML", fieldname: "delivery_notes_area" },
+    ],
+    primary_action_label: __("Add Selected"),
+    primary_action: function () {
+      let checked_items = [];
+      dialog.$wrapper.find('input[type="checkbox"]:checked').each(function () {
+        let dn_name = $(this).data("dn-name");
+        if (dn_name) {
+          checked_items.push(dn_name);
+        }
+      });
+      
+      if (checked_items.length > 0) {
+        // Get already added delivery notes
+        let existing_dns = [];
+        frm.doc.items.forEach(item => {
+          if (item.delivery_note && !existing_dns.includes(item.delivery_note)) {
+            existing_dns.push(item.delivery_note);
+          }
+        });
+        
+        // Filter out already added delivery notes
+        let new_dns = checked_items.filter(dn => !existing_dns.includes(dn));
+        
+        if (new_dns.length > 0) {
+          add_delivery_notes_to_invoice(frm, new_dns);
+          frappe.msgprint(__("{0} new delivery note(s) added to invoice", [new_dns.length]));
+        } else {
+          frappe.msgprint(__("Selected delivery notes are already in the invoice"));
+        }
+        
+        dialog.hide();
+      } else {
+        frappe.msgprint(__("Please select at least one delivery note"));
+      }
+    },
+  });
+
+  let html = `<div class="delivery-notes-list">
+    <div class="list-item" style="padding: 10px; font-weight: bold;">
+      <label style="display: flex; align-items: center;">
+        <input type="checkbox" id="select-all-dns" style="margin-right: 10px;">
+        <div>Select All</div>
+      </label>
+    </div>`;
+    
+  delivery_notes.forEach(function (dn) {
+    let dn_name = dn.name;
+    let dn_customer = dn.customer || 'N/A';
+    let dn_date = dn.posting_date || '';
+    
+    // Fetch additional data for each delivery note
+    frappe.db.get_value("Delivery Note", dn_name, ["grand_total"]).then((r) => {
+      let dn_total = r.message.grand_total || 0;
+    
+      let is_already_added = existing_dns.includes(dn_name);
+      let checkbox_style = is_already_added ? 'disabled style="margin-right: 10px;"' : 'style="margin-right: 10px;"';
+      let row_style = is_already_added ? 'padding: 10px; border-bottom: 1px solid #ddd; background-color: #f8f9fa; opacity: 0.6;' : 'padding: 10px; border-bottom: 1px solid #ddd;';
+      let status_text = is_already_added ? ' <span style="color: green; font-weight: bold;">(Already Added)</span>' : '';
+    
+      let row_html = `
+        <div class="list-item" style="${row_style}">
+          <label style="display: flex; align-items: center;">
+            <input type="checkbox" data-dn-name="${dn_name}" ${checkbox_style} ${is_already_added ? 'checked' : ''}>
+            <div>
+              <strong>${dn_name}</strong> - ${dn_date}${status_text}<br>
+              <small>Customer: ${dn_customer} | Total: ${format_currency(dn_total)}</small>
+            </div>
+          </label>
+        </div>
+      `;
+      
+      // Append the row to the dialog
+      dialog.fields_dict.delivery_notes_area.$wrapper.find('.delivery-notes-list').append(row_html);
+    });
+  });
+  
+  html += `</div>`;
+  dialog.fields_dict.delivery_notes_area.$wrapper.html(html);
+  
+  // Add event handler for select-all checkbox
+  dialog.$wrapper.find('#select-all-dns').on('change', function() {
+    let isChecked = $(this).is(':checked');
+    dialog.$wrapper.find('input[data-dn-name]:not(:disabled)').prop('checked', isChecked);
+  });
+  
+  dialog.show();
+};
+
+
+
+var add_delivery_notes_to_invoice = function (frm, delivery_note_names) {
+  delivery_note_names.forEach(function (dn_name) {
+    frappe.model.with_doc("Delivery Note", dn_name, function () {
+      let delivery_note = frappe.model.get_doc("Delivery Note", dn_name);
+      
+      frappe.call({
+        method: "erpnext.stock.doctype.delivery_note.delivery_note.make_sales_invoice",
+        args: {
+          source_name: dn_name
+        },
+        callback: function (r) {
+          if (r.message && r.message.items) {
+            r.message.items.forEach(function (item) {
+              let existing_item = frm.doc.items.find(si_item => 
+                si_item.delivery_note === dn_name && si_item.dn_detail === item.dn_detail
+              );
+              
+              if (!existing_item) {
+                var si_item = frappe.model.add_child(frm.doc, "Sales Invoice Item", "items");
+                frappe.model.set_value(si_item.doctype, si_item.name, "item_code", item.item_code);
+                frappe.model.set_value(si_item.doctype, si_item.name, "item_name", item.item_name);
+                frappe.model.set_value(si_item.doctype, si_item.name, "description", item.description);
+                frappe.model.set_value(si_item.doctype, si_item.name, "qty", item.qty);
+                frappe.model.set_value(si_item.doctype, si_item.name, "rate", item.rate);
+                frappe.model.set_value(si_item.doctype, si_item.name, "delivery_note", dn_name);
+                frappe.model.set_value(si_item.doctype, si_item.name, "dn_detail", item.dn_detail);
+                if (item.income_account) {
+                  frappe.model.set_value(si_item.doctype, si_item.name, "income_account", item.income_account);
+                }
+                if (item.cost_center) {
+                  frappe.model.set_value(si_item.doctype, si_item.name, "cost_center", item.cost_center);
+                }
+              }
+            });
+            frm.refresh_fields();
+          }
+        },
+      });
+    });
+  });
 };

@@ -494,7 +494,7 @@ var get_outpatient_delivery_notes = function (frm) {
 
   // Fetch outpatient delivery notes using custom query
   frappe.call({
-    method: "erpnext.controllers.queries.get_outpatient_bills_to_be_billed",
+    method: "pcare.pcare.custom_queries.get_outpatient_bills_to_be_billed",
     args: {
       doctype: "Delivery Note",
       txt: "",

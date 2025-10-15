@@ -185,7 +185,6 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Customer",
-   "no_copy": 1,
    "options": "Customer"
   },
   {
@@ -523,7 +522,7 @@
  "image_field": "image",
  "links": [],
  "max_attachments": 50,
- "modified": "2025-07-17 12:17:59.142443",
+ "modified": "2025-08-19 09:40:03.410152",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient",

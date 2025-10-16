@@ -17,6 +17,8 @@
   "practitioner_name",
   "gender",
   "image",
+  "company_name",
+  "company_name_display",
   "column_break_7",
   "status",
   "mobile_phone",
@@ -548,6 +550,19 @@
    "label": "Company Details"
   },
   {
+   "fieldname": "company_name",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fetch_from": "company_name.company_name",
+   "fieldname": "company_name_display",
+   "fieldtype": "Data",
+   "label": "Company Name",
+   "read_only": 1
+  },
+  {
    "fetch_from": "company_name.brn",
    "fieldname": "brn",
    "fieldtype": "Data",
@@ -607,7 +622,7 @@
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-10-13 14:17:52.376924",
+ "modified": "2025-10-16 10:34:28.606625",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

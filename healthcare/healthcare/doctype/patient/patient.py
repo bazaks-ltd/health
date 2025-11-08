@@ -23,6 +23,7 @@ from healthcare.healthcare.doctype.healthcare_settings.healthcare_settings impor
     get_receivable_account,
     send_registration_sms,
 )
+from healthcare.healthcare.doctype.patient.patient_duplicate_checker import DuplicateDetector
 
 
 class Patient(Document):
@@ -35,6 +36,90 @@ class Patient(Document):
         self.set_full_name()
         self.flags.is_new_doc = self.is_new()
         self.flags.existing_customer = self.is_new() and bool(self.customer)
+        
+        # Check for duplicates on new patient creation
+        if self.is_new():
+            self.check_for_duplicates()
+
+    def check_for_duplicates(self):
+        """
+        Check for potential duplicate patients using multiple detection techniques
+        Throws error if high-confidence duplicates found, warning for medium confidence
+        """
+        # Skip if user has explicitly bypassed duplicate check
+        if self.flags.ignore_duplicate_check:
+            return
+        
+        detector = DuplicateDetector(self)
+        duplicates = detector.check_duplicates()
+        
+        if not duplicates:
+            return
+        
+        # Categorize duplicates by confidence level
+        high_confidence = [d for d in duplicates if d['score'] >= detector.HIGH_CONFIDENCE_THRESHOLD]
+        medium_confidence = [d for d in duplicates if detector.MEDIUM_CONFIDENCE_THRESHOLD <= d['score'] < detector.HIGH_CONFIDENCE_THRESHOLD]
+        
+        # Block creation if high confidence duplicates found
+        if high_confidence:
+            duplicate_list = []
+            for dup in high_confidence[:5]:  # Show top 5
+                duplicate_list.append(
+                    _("• {0} (ID: {1}) - {2}").format(
+                        dup['patient_name'],
+                        dup['name'],
+                        ', '.join(dup['reasons'])
+                    )
+                )
+            
+            message = _("""
+                <strong>Potential Duplicate Patient Detected!</strong><br><br>
+                The system has found {0} patient(s) that closely match the information you entered:<br><br>
+                {1}<br><br>
+                <strong>To proceed:</strong><br>
+                1. Review the existing patient records listed above<br>
+                2. If this is truly a new patient, please verify and ensure the information is correct<br>
+                3. Contact your system administrator if you need to override this check<br><br>
+                <em>This check helps prevent duplicate patient records in the system.</em>
+            """).format(
+                len(high_confidence),
+                '<br>'.join(duplicate_list)
+            )
+            
+            frappe.throw(
+                message,
+                title=_("Duplicate Patient Found"),
+                exc=frappe.DuplicateEntryError
+            )
+        
+        # Show warning for medium confidence duplicates
+        elif medium_confidence:
+            duplicate_list = []
+            for dup in medium_confidence[:5]:  # Show top 5
+                duplicate_list.append(
+                    _("• {0} (ID: {1}) - {2}").format(
+                        dup['patient_name'],
+                        dup['name'],
+                        ', '.join(dup['reasons'])
+                    )
+                )
+            
+            message = _("""
+                <strong>Possible Duplicate Patient Detected</strong><br><br>
+                The system has found {0} patient(s) that may match the information you entered:<br><br>
+                {1}<br><br>
+                <em>Please review these patients before proceeding to avoid creating duplicates.</em>
+            """).format(
+                len(medium_confidence),
+                '<br>'.join(duplicate_list)
+            )
+            
+            frappe.msgprint(
+                message,
+                title=_("Possible Duplicate"),
+                indicator='orange',
+                alert=True
+            )
 
     def before_insert(self):
         self.set_missing_customer_details()

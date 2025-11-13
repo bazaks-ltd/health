@@ -904,3 +904,26 @@ def get_patient_detail(patient):
         vital_sign[0].pop("inpatient_record")
         details.update(vital_sign[0])
     return details
+
+
+@frappe.whitelist()
+def clear_inpatient_status(patient):
+    """
+    Clear inpatient_status and inpatient_record fields on Patient record.
+    Admin only function for manual cleanup.
+    """
+    if not frappe.has_permission("Patient", "write"):
+        frappe.throw(_("You do not have permission to update Patient records"), frappe.PermissionError)
+    
+    if not frappe.has_role("System Manager") and not frappe.has_role("Administrator"):
+        frappe.throw(_("Only Administrators can clear inpatient status"), frappe.PermissionError)
+    
+    frappe.db.set_value(
+        "Patient", patient, {
+            "inpatient_status": None,
+            "inpatient_record": None
+        }
+    )
+    
+    frappe.msgprint(_("Inpatient status and record cleared successfully"), indicator="green")
+    return True

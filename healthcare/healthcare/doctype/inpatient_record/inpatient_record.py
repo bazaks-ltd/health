@@ -319,6 +319,14 @@ def discharge_patient(inpatient_record):
     inpatient_record.healthcare_service_unit = None
 
     inpatient_record.save(ignore_permissions=True)
+    
+    # Update Patient record's inpatient_status and inpatient_record
+    frappe.db.set_value(
+        "Patient", inpatient_record.patient, {
+            "inpatient_status": None, 
+            "inpatient_record": None
+        }
+    )
 
 
 def readmit(inpatient_record):

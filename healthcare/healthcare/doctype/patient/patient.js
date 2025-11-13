@@ -51,6 +51,15 @@ frappe.ui.form.on('Patient', {
 				}, __('Create'));
 				frm.toggle_enable(['customer'], 0);
 			}
+			
+			// Add admin-only button to clear inpatient status
+			if ((frappe.user.has_role('System Manager') || frappe.user.has_role('Administrator')) && 
+				(frm.doc.inpatient_status || frm.doc.inpatient_record)) {
+				frm.add_custom_button(__('Clear Inpatient Status'), function () {
+					clear_inpatient_status(frm);
+				}, __('Tools'));
+			}
+			
 			frappe.contacts.render_address_and_contact(frm);
 			erpnext.utils.set_party_dashboard_indicators(frm);
 		} else {
@@ -672,6 +681,33 @@ let clear_duplicate_ui = function(frm) {
 	frm.duplicate_data = null;
 
 	render_duplicate_status(frm, { state: 'idle' });
+};
+
+let clear_inpatient_status = function(frm) {
+	if (!frm.doc.name) {
+		frappe.throw(__('Please save the patient first'));
+	}
+	
+	frappe.confirm(
+		__('Are you sure you want to clear the inpatient status and record for this patient?'),
+		function() {
+			// Yes
+			frappe.call({
+				method: 'healthcare.healthcare.doctype.patient.patient.clear_inpatient_status',
+				args: {
+					patient: frm.doc.name
+				},
+				callback: function(r) {
+					if (!r.exc) {
+						frm.reload_doc();
+					}
+				}
+			});
+		},
+		function() {
+			// No
+		}
+	);
 };
 
 // Add custom event handler for review button

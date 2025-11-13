@@ -915,7 +915,9 @@ def clear_inpatient_status(patient):
     if not frappe.has_permission("Patient", "write"):
         frappe.throw(_("You do not have permission to update Patient records"), frappe.PermissionError)
     
-    if not frappe.has_role("System Manager") and not frappe.has_role("Administrator"):
+    # Check if user is Administrator or has System Manager role
+    user_roles = frappe.get_roles()
+    if frappe.session.user != "Administrator" and "System Manager" not in user_roles:
         frappe.throw(_("Only Administrators can clear inpatient status"), frappe.PermissionError)
     
     frappe.db.set_value(

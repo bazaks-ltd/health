@@ -60,7 +60,7 @@ class Patient(Document):
         high_confidence = [d for d in duplicates if d['score'] >= detector.HIGH_CONFIDENCE_THRESHOLD]
         medium_confidence = [d for d in duplicates if detector.MEDIUM_CONFIDENCE_THRESHOLD <= d['score'] < detector.HIGH_CONFIDENCE_THRESHOLD]
         
-        # Block creation if high confidence duplicates found
+        # If high confidence duplicates found, warn user but allow save
         if high_confidence:
             duplicate_list = []
             for dup in high_confidence[:5]:  # Show top 5
@@ -73,23 +73,20 @@ class Patient(Document):
                 )
             
             message = _("""
-                <strong>Potential Duplicate Patient Detected!</strong><br><br>
+                <strong>Potential Duplicate Patients Detected!</strong><br><br>
                 The system has found {0} patient(s) that closely match the information you entered:<br><br>
                 {1}<br><br>
-                <strong>To proceed:</strong><br>
-                1. Review the existing patient records listed above<br>
-                2. If this is truly a new patient, please verify and ensure the information is correct<br>
-                3. Contact your system administrator if you need to override this check<br><br>
-                <em>This check helps prevent duplicate patient records in the system.</em>
+                <em>Please review the patients listed above to avoid creating an unintended duplicate record.</em>
             """).format(
                 len(high_confidence),
                 '<br>'.join(duplicate_list)
             )
             
-            frappe.throw(
+            frappe.msgprint(
                 message,
-                title=_("Duplicate Patient Found"),
-                exc=frappe.DuplicateEntryError
+                title=_("Potential Duplicate"),
+                indicator='red',
+                alert=True
             )
         
         # Show warning for medium confidence duplicates

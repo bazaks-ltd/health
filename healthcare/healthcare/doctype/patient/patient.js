@@ -379,35 +379,6 @@ let show_duplicate_warning = function(frm, data) {
 			}
 		}, 100);
 
-		// Add an explicit message box (msgprint) to ensure it's visible to user
-		frappe.msgprint({
-			title: __('Potential Duplicate Patients Detected'),
-			indicator: 'red',
-			message: `
-				<div style="padding:8px 0">
-					<span class="indicator red" style="margin-right:8px"></span>
-					<strong>${__('Potential duplicate patients detected!')}</strong>
-					<br>
-					<button class="btn btn-xs btn-primary" id="review-duplicates-btn">
-						${__('Review Duplicates')}
-					</button>
-				</div>
-			`
-		});
-
-		// Attach event handler for review button after msgprint is rendered
-		setTimeout(() => {
-			const btn = document.getElementById('review-duplicates-btn');
-			if (btn) {
-				btn.onclick = () => {
-					if (cur_frm) {
-						render_duplicate_panel(cur_frm, cur_frm.duplicate_data, { show: true });
-					}
-				};
-			}
-		}, 100);
-
-		
 	} else if (medium_conf > 0) {
 		// Show moderate warning for medium confidence
 		frappe.show_alert({

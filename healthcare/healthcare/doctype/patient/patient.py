@@ -331,7 +331,7 @@ class Patient(Document):
             customer.customer_group = self.customer_group
         if self.territory:
             customer.territory = self.territory
-        old_customer_name = customer.customer_name
+        old_customer_id = customer.name  # Store the old Customer ID (primary key)
         customer.customer_name = self.patient_name
         customer.default_price_list = self.default_price_list
         customer.default_currency = self.default_currency
@@ -340,15 +340,21 @@ class Patient(Document):
         customer.ignore_mandatory = True
         customer.save(ignore_permissions=True)
 
-        self.db_set("customer", self.patient_name)
-        frappe.db.set_value("Customer", customer.name,
-                            "name", self.patient_name)
+        # Rename the customer document if the patient name has changed
+        if old_customer_id != self.patient_name:
+            rd.rename_doc("Customer", old_customer_id, self.patient_name,
+                         force=True, ignore_permissions=True,
+                         rebuild_search=False)
 
-        self.update_contact_links_after_rename(
-            old_customer_name, self.patient_name)
+            # Update patient's customer link to the new name
+            self.db_set("customer", self.patient_name)
+
+            # Update contact links with the correct old customer ID
+            self.update_contact_links_after_rename(
+                old_customer_id, self.patient_name)
 
         frappe.msgprint(_("Customer {0} updated").format(
-            customer.name), alert=True)
+            self.patient_name), alert=True)
 
     def update_patient_based_on_existing_customer(self):
         customer = frappe.get_doc("Customer", self.customer)

@@ -128,7 +128,7 @@
   {
    "fieldname": "no_of_hours",
    "fieldtype": "Int",
-   "hidden": 1,
+   "depends_on": "eval: doc.is_billable == 1",
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "UOM Conversion in Hours",

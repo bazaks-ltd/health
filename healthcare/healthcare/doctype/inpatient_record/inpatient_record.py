@@ -250,6 +250,22 @@ def schedule_discharge(args):
         "Patient", discharge_order["patient"], "inpatient_record"
     )
 
+    # Track if we found the record via query (not from Patient document)
+    found_via_query = False
+    
+    # If not found in Patient document, query directly for active inpatient record
+    if not inpatient_record_id:
+        inpatient_record_id = frappe.db.get_value(
+            "Inpatient Record",
+            {
+                "patient": discharge_order["patient"],
+                "status": ["in", ["Admitted", "Admission Scheduled", "Discharge Scheduled"]]
+            },
+            "name",
+            order_by="creation desc"
+        )
+        found_via_query = True
+
     if inpatient_record_id:
 
         inpatient_record = frappe.get_doc(
@@ -259,8 +275,13 @@ def schedule_discharge(args):
         inpatient_record.status = "Discharge Scheduled"
         inpatient_record.save(ignore_permissions=True)
 
+        # Update Patient document with inpatient_status and inpatient_record (if missing)
+        patient_update = {"inpatient_status": inpatient_record.status}
+        if found_via_query:
+            patient_update["inpatient_record"] = inpatient_record_id
+        
         frappe.db.set_value(
-            "Patient", discharge_order["patient"], "inpatient_status", inpatient_record.status
+            "Patient", discharge_order["patient"], patient_update
         )
         if inpatient_record.discharge_encounter:
             frappe.db.set_value(

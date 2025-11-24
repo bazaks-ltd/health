@@ -74,6 +74,7 @@
   "clinical_examination",
   "investigation_done",
   "provisional_diagnosis",
+  "insurance_diagnosis",
   "treatment",
   "plan",
   "radiology_request",
@@ -453,6 +454,12 @@
    "fieldname": "provisional_diagnosis",
    "fieldtype": "Long Text",
    "label": "Provisional Diagnosis"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "insurance_diagnosis",
+   "fieldtype": "Long Text",
+   "label": "Insurance Diagnosis"
   },
   {
    "allow_on_submit": 1,

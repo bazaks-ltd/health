@@ -73,6 +73,7 @@ class PatientAppointment(Document):
 	def set_status(self):
 		today = getdate()
 		appointment_date = getdate(self.appointment_date)
+		previous_status = self.get_doc_before_save().status if self.get_doc_before_save() else None
 
 		# If appointment is created for today set status as Open else Scheduled
 		if appointment_date == today:
@@ -85,6 +86,11 @@ class PatientAppointment(Document):
 		elif appointment_date < today:
 			if self.status == "Scheduled":
 				self.status = "No Show"
+
+		# Set checked_in_time and checked_in_by when status changes to "Checked In"
+		if self.status == "Checked In" and previous_status != "Checked In" and not self.checked_in_time:
+			self.checked_in_time = frappe.utils.now_datetime()
+			self.checked_in_by = frappe.session.user
 
 	def validate_overlaps(self):
 		if self.appointment_based_on_check_in:
@@ -732,7 +738,21 @@ def validate_practitioner_schedules(schedule_entry, practitioner):
 
 @frappe.whitelist()
 def update_status(appointment_id, status):
+	# Get current status before updating
+	current_status = frappe.db.get_value("Patient Appointment", appointment_id, "status")
+
+	# Update status
 	frappe.db.set_value("Patient Appointment", appointment_id, "status", status)
+
+	# Set checked_in_time and checked_in_by when status changes to "Checked In"
+	if status == "Checked In" and current_status != "Checked In":
+		checked_in_time = frappe.db.get_value("Patient Appointment", appointment_id, "checked_in_time")
+		if not checked_in_time:
+			frappe.db.set_value("Patient Appointment", appointment_id, {
+				"checked_in_time": frappe.utils.now_datetime(),
+				"checked_in_by": frappe.session.user
+			})
+
 	appointment_booked = True
 	if status == "Cancelled":
 		appointment_booked = False
@@ -930,11 +950,14 @@ def check_in_patient(patient, docname):
 	patient_appointment =  frappe.get_doc("Patient Appointment",docname)
 	patient = frappe.get_doc("Patient", patient)
 
+	# Get current checked_in_time to avoid overwriting if already set
+	current_checked_in_time = frappe.db.get_value("Patient Appointment", docname, "checked_in_time")
+
 	frappe.db.sql("""
 		UPDATE `tabPatient Appointment`
-		SET status = "Checked In"
+		SET status = "Checked In", checked_in_time = %s, checked_in_by = %s
 		WHERE name = %s
-	""", (docname))
+	""", (current_checked_in_time or frappe.utils.now_datetime(), frappe.session.user, docname))
 
 	frappe.db.commit()
 

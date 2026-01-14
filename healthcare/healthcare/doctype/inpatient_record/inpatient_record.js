@@ -179,6 +179,21 @@ frappe.ui.form.on("Inpatient Record", {
     frm.trigger("add_important_notes");
     frm.trigger("add_doctors_notes");
     frm.trigger("add_nurses_notes");
+
+    // Freeze the notes tab if inpatient record is discharged
+    // Allow modifications if status is "Discharge Scheduled"
+    if (frm.doc.status === "Discharged") {
+      $wrapper.css({
+        "pointer-events": "none",
+        opacity: 0.7,
+      });
+    } else {
+      // Ensure tab is editable if status is NOT "Discharged" (including "Discharge Scheduled")
+      $wrapper.css({
+        "pointer-events": "auto",
+        opacity: 1,
+      });
+    }
   },
 
   add_important_notes: function (frm) {

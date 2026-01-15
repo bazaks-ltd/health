@@ -183,16 +183,25 @@ frappe.ui.form.on("Inpatient Record", {
     // Freeze the notes tab if inpatient record is discharged
     // Allow modifications if status is "Discharge Scheduled"
     if (frm.doc.status === "Discharged") {
-      $wrapper.css({
-        "pointer-events": "none",
-        opacity: 0.7,
+      // Add frozen class for visual styling
+      $wrapper.addClass('notes-frozen');
+
+      // Disable all form inputs but allow scrolling/text selection for copying
+      $wrapper.find('textarea, input, select').each(function() {
+        $(this).prop('readonly', true);
+        $(this).prop('disabled', true);
       });
+
+      // Disable action buttons but NOT tab navigation buttons (nav-link)
+      $wrapper.find('button, .btn').not('.nav-link').prop('disabled', true);
     } else {
-      // Ensure tab is editable if status is NOT "Discharged" (including "Discharge Scheduled")
-      $wrapper.css({
-        "pointer-events": "auto",
-        opacity: 1,
+      // Remove frozen state - ensure tab is editable if status is NOT "Discharged"
+      $wrapper.removeClass('notes-frozen');
+      $wrapper.find('textarea, input, select').each(function() {
+        $(this).prop('readonly', false);
+        $(this).prop('disabled', false);
       });
+      $wrapper.find('button, .btn').not('.nav-link').prop('disabled', false);
     }
   },
 

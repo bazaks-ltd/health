@@ -10,6 +10,7 @@
   "left",
   "check_out",
   "invoiced",
+  "dont_bill",
   "day_ward",
   "half_day",
   "hdu"
@@ -50,6 +51,15 @@
    "fieldtype": "Check",
    "label": "Invoiced",
    "read_only": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "columns": 1,
+   "default": "0",
+   "fieldname": "dont_bill",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Don't Bill"
   },
   {
    "allow_in_quick_entry": 1,

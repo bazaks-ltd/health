@@ -54,7 +54,7 @@ frappe.ui.form.on("Sales Invoice", {
           });
           frm.set_value("customer", "");
         }
-        frm.set_df_property("customer", "read_only", frm.doc.customer ? 1 : 0);
+        // frm.set_df_property("customer", "read_only", frm.doc.customer ? 1 : 0);
       });
     } else {
       frm.set_value("customer", "");

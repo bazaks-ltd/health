@@ -12,6 +12,8 @@
   "status",
   "appointment_type",
   "appointment_for",
+  "checked_in_time",
+  "checked_in_by",
   "column_break_1",
   "company",
   "practitioner",
@@ -403,6 +405,19 @@
    "read_only": 1,
    "reqd": 1,
    "set_only_once": 1
+  },
+  {
+   "fieldname": "checked_in_time",
+   "fieldtype": "Datetime",
+   "label": "Checked-In Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "checked_in_by",
+   "fieldtype": "Link",
+   "label": "Checked-In By",
+   "options": "User",
+   "read_only": 1
   },
   {
    "fieldname": "section_patient_details",

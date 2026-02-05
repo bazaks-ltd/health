@@ -13,6 +13,7 @@ from frappe.utils import get_datetime, get_link_to_form, getdate, now_datetime, 
 
 from healthcare.healthcare.doctype.nursing_task.nursing_task import NursingTask
 from healthcare.healthcare.utils import validate_nursing_tasks
+from pcare.api import mark_healthcare_units_occupied, mark_healthcare_units_vacant
 
 
 class InpatientRecord(Document):
@@ -250,6 +251,22 @@ def schedule_discharge(args):
         "Patient", discharge_order["patient"], "inpatient_record"
     )
 
+    # Track if we found the record via query (not from Patient document)
+    found_via_query = False
+    
+    # If not found in Patient document, query directly for active inpatient record
+    if not inpatient_record_id:
+        inpatient_record_id = frappe.db.get_value(
+            "Inpatient Record",
+            {
+                "patient": discharge_order["patient"],
+                "status": ["in", ["Admitted", "Admission Scheduled", "Discharge Scheduled"]]
+            },
+            "name",
+            order_by="creation desc"
+        )
+        found_via_query = True
+
     if inpatient_record_id:
 
         inpatient_record = frappe.get_doc(
@@ -259,8 +276,13 @@ def schedule_discharge(args):
         inpatient_record.status = "Discharge Scheduled"
         inpatient_record.save(ignore_permissions=True)
 
+        # Update Patient document with inpatient_status and inpatient_record (if missing)
+        patient_update = {"inpatient_status": inpatient_record.status}
+        if found_via_query:
+            patient_update["inpatient_record"] = inpatient_record_id
+        
         frappe.db.set_value(
-            "Patient", discharge_order["patient"], "inpatient_status", inpatient_record.status
+            "Patient", discharge_order["patient"], patient_update
         )
         if inpatient_record.discharge_encounter:
             frappe.db.set_value(
@@ -319,6 +341,14 @@ def discharge_patient(inpatient_record):
     inpatient_record.healthcare_service_unit = None
 
     inpatient_record.save(ignore_permissions=True)
+    
+    # Update Patient record's inpatient_status and inpatient_record
+    frappe.db.set_value(
+        "Patient", inpatient_record.patient, {
+            "inpatient_status": None, 
+            "inpatient_record": None
+        }
+    )
 
 
 def readmit(inpatient_record):
@@ -492,8 +522,8 @@ def transfer_patient(inpatient_record, service_unit, check_in):
 
     inpatient_record.save(ignore_permissions=True)
 
-    frappe.db.set_value("Healthcare Service Unit",
-                        service_unit, "occupancy_status", "Occupied")
+    # Mark the new room as occupied
+    mark_healthcare_units_occupied([service_unit])
 
 
 def patient_leave_service_unit(inpatient_record, check_out, leave_from):
@@ -502,9 +532,8 @@ def patient_leave_service_unit(inpatient_record, check_out, leave_from):
             if inpatient_occupancy.left != 1 and inpatient_occupancy.service_unit == leave_from:
                 inpatient_occupancy.left = True
                 inpatient_occupancy.check_out = check_out
-                frappe.db.set_value(
-                    "Healthcare Service Unit", inpatient_occupancy.service_unit, "occupancy_status", "Vacant"
-                )
+                # Mark the old room as vacant
+                mark_healthcare_units_vacant([leave_from])
     inpatient_record.save(ignore_permissions=True)
 
 

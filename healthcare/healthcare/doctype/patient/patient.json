@@ -185,7 +185,6 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Customer",
-   "no_copy": 1,
    "options": "Customer"
   },
   {
@@ -523,7 +522,7 @@
  "image_field": "image",
  "links": [],
  "max_attachments": 50,
- "modified": "2025-07-17 12:17:59.142443",
+ "modified": "2025-11-08 12:04:24.006094",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient",
@@ -579,7 +578,6 @@
    "write": 1
   }
  ],
- "quick_entry": 1,
  "restrict_to_domain": "Healthcare",
  "search_fields": "patient_name,mobile,email,phone,uid",
  "show_name_in_global_search": 1,

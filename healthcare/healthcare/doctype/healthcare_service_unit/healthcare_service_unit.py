@@ -141,6 +141,55 @@ def add_multiple_service_units(parent, data):
 	return failed_list
 
 
+@frappe.whitelist()
+def vacate_room(room_name):
+	"""Discharge a room by setting occupancy status to Vacant"""
+	try:
+		current_status = frappe.db.sql("""
+			SELECT occupancy_status, inpatient_occupancy 
+			FROM `tabHealthcare Service Unit` 
+			WHERE name = %s
+		""", (room_name,), as_dict=True)
+		
+		if not current_status:
+			return f"Healthcare Service Unit {room_name} not found"
+		
+		room_data = current_status[0]
+		
+		if not room_data.get('inpatient_occupancy'):
+			return f"Healthcare Service Unit {room_name} is not an inpatient room"
+		
+		if room_data.get('occupancy_status') == 'Vacant':
+			return "Room already vacant"
+		
+		if room_data.get('occupancy_status') == 'Occupied':
+			# Check for active inpatient records linked to this room
+			active_inpatient = frappe.db.sql("""
+				SELECT name, patient_name FROM `tabInpatient Record` 
+				WHERE healthcare_service_unit = %s 
+				AND status IN ('Admitted', 'Discharge Scheduled')
+			""", (room_name,), as_dict=True)
+			
+			if active_inpatient:
+				patient_name = active_inpatient[0].get('patient_name')
+				return f"Cannot vacate room because room is physically occupied by {patient_name}"
+			
+			frappe.db.sql("""
+				UPDATE `tabHealthcare Service Unit` 
+				SET occupancy_status = 'Vacant', modified = NOW(), modified_by = %s
+				WHERE name = %s
+			""", (frappe.session.user, room_name))
+			
+			frappe.db.commit()
+			return f"Healthcare Service Unit {room_name} vacant"
+		
+		return f"Room status unclear"
+		
+	except Exception as e:
+		frappe.log_error(f"Error discharging room {room_name}: {str(e)}")
+		return f"Error discharging room: {str(e)}"
+
+
 def on_doctype_update():
 	frappe.db.add_unique(
 		"Healthcare Service Unit",

@@ -23,6 +23,7 @@ from healthcare.healthcare.doctype.healthcare_settings.healthcare_settings impor
     get_receivable_account,
     send_registration_sms,
 )
+from healthcare.healthcare.doctype.patient.patient_duplicate_checker import DuplicateDetector
 
 
 class Patient(Document):
@@ -35,6 +36,87 @@ class Patient(Document):
         self.set_full_name()
         self.flags.is_new_doc = self.is_new()
         self.flags.existing_customer = self.is_new() and bool(self.customer)
+        
+        # Check for duplicates on new patient creation
+        if self.is_new():
+            self.check_for_duplicates()
+
+    def check_for_duplicates(self):
+        """
+        Check for potential duplicate patients using multiple detection techniques
+        Throws error if high-confidence duplicates found, warning for medium confidence
+        """
+        # Skip if user has explicitly bypassed duplicate check
+        if self.flags.ignore_duplicate_check:
+            return
+        
+        detector = DuplicateDetector(self)
+        duplicates = detector.check_duplicates()
+        
+        if not duplicates:
+            return
+        
+        # Categorize duplicates by confidence level
+        high_confidence = [d for d in duplicates if d['score'] >= detector.HIGH_CONFIDENCE_THRESHOLD]
+        medium_confidence = [d for d in duplicates if detector.MEDIUM_CONFIDENCE_THRESHOLD <= d['score'] < detector.HIGH_CONFIDENCE_THRESHOLD]
+        
+        # If high confidence duplicates found, warn user but allow save
+        if high_confidence:
+            duplicate_list = []
+            for dup in high_confidence[:5]:  # Show top 5
+                duplicate_list.append(
+                    _("• {0} (ID: {1}) - {2}").format(
+                        dup['patient_name'],
+                        dup['name'],
+                        ', '.join(dup['reasons'])
+                    )
+                )
+            
+            message = _("""
+                <strong>Potential Duplicate Patients Detected!</strong><br><br>
+                The system has found {0} patient(s) that closely match the information you entered:<br><br>
+                {1}<br><br>
+                <em>Please review the patients listed above to avoid creating an unintended duplicate record.</em>
+            """).format(
+                len(high_confidence),
+                '<br>'.join(duplicate_list)
+            )
+            
+            frappe.msgprint(
+                message,
+                title=_("Potential Duplicate"),
+                indicator='red',
+                alert=True
+            )
+        
+        # Show warning for medium confidence duplicates
+        elif medium_confidence:
+            duplicate_list = []
+            for dup in medium_confidence[:5]:  # Show top 5
+                duplicate_list.append(
+                    _("• {0} (ID: {1}) - {2}").format(
+                        dup['patient_name'],
+                        dup['name'],
+                        ', '.join(dup['reasons'])
+                    )
+                )
+            
+            message = _("""
+                <strong>Possible Duplicate Patient Detected</strong><br><br>
+                The system has found {0} patient(s) that may match the information you entered:<br><br>
+                {1}<br><br>
+                <em>Please review these patients before proceeding to avoid creating duplicates.</em>
+            """).format(
+                len(medium_confidence),
+                '<br>'.join(duplicate_list)
+            )
+            
+            frappe.msgprint(
+                message,
+                title=_("Possible Duplicate"),
+                indicator='orange',
+                alert=True
+            )
 
     def before_insert(self):
         self.set_missing_customer_details()
@@ -331,7 +413,7 @@ class Patient(Document):
             customer.customer_group = self.customer_group
         if self.territory:
             customer.territory = self.territory
-        old_customer_name = customer.customer_name
+        old_customer_id = customer.name  # Store the old Customer ID (primary key)
         customer.customer_name = self.patient_name
         customer.default_price_list = self.default_price_list
         customer.default_currency = self.default_currency
@@ -340,15 +422,21 @@ class Patient(Document):
         customer.ignore_mandatory = True
         customer.save(ignore_permissions=True)
 
-        self.db_set("customer", self.patient_name)
-        frappe.db.set_value("Customer", customer.name,
-                            "name", self.patient_name)
+        # Rename the customer document if the patient name has changed
+        if old_customer_id != self.patient_name:
+            rd.rename_doc("Customer", old_customer_id, self.patient_name,
+                         force=True, ignore_permissions=True,
+                         rebuild_search=False)
 
-        self.update_contact_links_after_rename(
-            old_customer_name, self.patient_name)
+            # Update patient's customer link to the new name
+            self.db_set("customer", self.patient_name)
+
+            # Update contact links with the correct old customer ID
+            self.update_contact_links_after_rename(
+                old_customer_id, self.patient_name)
 
         frappe.msgprint(_("Customer {0} updated").format(
-            customer.name), alert=True)
+            self.patient_name), alert=True)
 
     def update_patient_based_on_existing_customer(self):
         customer = frappe.get_doc("Customer", self.customer)
@@ -819,3 +907,28 @@ def get_patient_detail(patient):
         vital_sign[0].pop("inpatient_record")
         details.update(vital_sign[0])
     return details
+
+
+@frappe.whitelist()
+def clear_inpatient_status(patient):
+    """
+    Clear inpatient_status and inpatient_record fields on Patient record.
+    Admin only function for manual cleanup.
+    """
+    if not frappe.has_permission("Patient", "write"):
+        frappe.throw(_("You do not have permission to update Patient records"), frappe.PermissionError)
+    
+    # Check if user is Administrator or has System Manager role
+    user_roles = frappe.get_roles()
+    if frappe.session.user != "Administrator" and "System Manager" not in user_roles:
+        frappe.throw(_("Only Administrators can clear inpatient status"), frappe.PermissionError)
+    
+    frappe.db.set_value(
+        "Patient", patient, {
+            "inpatient_status": None,
+            "inpatient_record": None
+        }
+    )
+    
+    frappe.msgprint(_("Inpatient status and record cleared successfully"), indicator="green")
+    return True

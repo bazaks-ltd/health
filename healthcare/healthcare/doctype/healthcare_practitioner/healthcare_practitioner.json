@@ -17,6 +17,8 @@
   "practitioner_name",
   "gender",
   "image",
+  "company_name",
+  "company_name_display",
   "column_break_7",
   "status",
   "mobile_phone",
@@ -54,6 +56,8 @@
   "personal_details_section",
   "nid",
   "tan",
+  "column_break_ewio",
+  "att_id_card",
   "outpatient_section",
   "op_chargeable",
   "op_perc_charge",
@@ -66,14 +70,21 @@
   "ct_perc",
   "uss_perc",
   "xray_perc",
+  "section_break_vxnd",
+  "tds_exempt",
+  "column_break_kjqs",
+  "att_tds_exempt",
   "company_details",
-  "company_name",
-  "company_name_display",
   "brn",
+  "doc_company_name",
+  "column_break_bvek",
+  "att_doc_brn",
   "bank_details_section",
   "beneficiary_name",
   "bank_account_number",
   "bank",
+  "column_break_ldyv",
+  "att_bank_details",
   "charges",
   "op_consulting_charge_item",
   "op_consulting_charge",
@@ -499,6 +510,13 @@
    "label": "is_chargeable"
   },
   {
+   "default": "0",
+   "description": "Check this if the practitioner is exempt from TDS deduction",
+   "fieldname": "tds_exempt",
+   "fieldtype": "Check",
+   "label": "TDS Exempt"
+  },
+  {
    "default": "40",
    "fieldname": "uss_perc",
    "fieldtype": "Percent",
@@ -555,11 +573,56 @@
    "fieldname": "details_tab",
    "fieldtype": "Tab Break",
    "label": "Details"
+  },
+  {
+   "fieldname": "section_break_vxnd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_ewio",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "att_id_card",
+   "fieldtype": "Attach",
+   "label": "ID Card "
+  },
+  {
+   "fieldname": "column_break_kjqs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "att_tds_exempt",
+   "fieldtype": "Attach",
+   "label": "TDS Exemption Certificate"
+  },
+  {
+   "fieldname": "doc_company_name",
+   "fieldtype": "Data",
+   "label": "Doctor Company Name"
+  },
+  {
+   "fieldname": "column_break_bvek",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "att_doc_brn",
+   "fieldtype": "Attach",
+   "label": "BRN"
+  },
+  {
+   "fieldname": "column_break_ldyv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "att_bank_details",
+   "fieldtype": "Attach",
+   "label": "Bank Details"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-08-04 14:18:26.560500",
+ "modified": "2025-10-16 10:34:28.606625",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

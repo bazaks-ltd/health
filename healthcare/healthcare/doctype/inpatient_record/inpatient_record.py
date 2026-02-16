@@ -13,7 +13,7 @@ from frappe.utils import get_datetime, get_link_to_form, getdate, now_datetime, 
 
 from healthcare.healthcare.doctype.nursing_task.nursing_task import NursingTask
 from healthcare.healthcare.utils import validate_nursing_tasks
-from pcare.pcare.utils.healthcare_service_unit import mark_healthcare_units_occupied, mark_healthcare_units_vacant
+from pcare.api import mark_healthcare_units_occupied, mark_healthcare_units_vacant
 
 
 class InpatientRecord(Document):

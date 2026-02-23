@@ -26,6 +26,8 @@
   "admitted_datetime",
   "expected_discharge",
   "er_procedure",
+  "procedures_section_break",
+  "procedures_html",
   "references",
   "admission_encounter",
   "admission_practitioner",
@@ -231,6 +233,16 @@
    "in_list_view": 1,
    "label": "Expected Discharge",
    "read_only": 1
+  },
+  {
+   "fieldname": "procedures_section_break",
+   "fieldtype": "Section Break",
+   "label": "Procedures"
+  },
+  {
+   "fieldname": "procedures_html",
+   "fieldtype": "HTML",
+   "label": "Procedures"
   },
   {
    "collapsible": 1,

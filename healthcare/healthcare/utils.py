@@ -270,6 +270,7 @@ def get_inpatient_services_to_invoice(patient, company):
 				and io.parent=ip.name
 				and io.left=1
 				and io.invoiced=0
+				and (io.dont_bill=0 or io.dont_bill IS NULL)
 		""",
 		(patient.name, company),
 		as_dict=1,

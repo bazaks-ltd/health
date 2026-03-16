@@ -499,7 +499,7 @@
    "fieldname": "title",
    "fieldtype": "Select",
    "label": "Title",
-   "options": "Mr\nMrs\nMaster\nMiss",
+   "options": "Mr\nMrs\nMaster\nMiss\nChild",
    "reqd": 1
   },
   {
@@ -522,7 +522,7 @@
  "image_field": "image",
  "links": [],
  "max_attachments": 50,
- "modified": "2025-11-08 12:04:24.006094",
+ "modified": "2026-03-16 14:52:42.388575",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient",

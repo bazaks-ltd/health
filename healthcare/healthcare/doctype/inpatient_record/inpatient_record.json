@@ -87,7 +87,12 @@
   "tab_3_tab",
   "prescription_json",
   "initial_encounter_json",
-  "discharge_summary_json"
+  "discharge_summary_json",
+  "icd10_tab",
+  "icd10_html",
+  "icd10_json",
+  "billing_note_tab",
+  "billing_note_html"
  ],
  "fields": [
   {
@@ -552,6 +557,32 @@
    "fieldtype": "HTML"
   },
   {
+   "fieldname": "icd10_tab",
+   "fieldtype": "Tab Break",
+   "label": "ICD10"
+  },
+  {
+   "fieldname": "icd10_html",
+   "fieldtype": "HTML",
+   "label": "ICD10 Classification"
+  },
+  {
+   "fieldname": "icd10_json",
+   "fieldtype": "JSON",
+   "hidden": 1,
+   "label": "ICD10 Classifications"
+  },
+  {
+   "fieldname": "billing_note_tab",
+   "fieldtype": "Tab Break",
+   "label": "Billing Note"
+  },
+  {
+   "fieldname": "billing_note_html",
+   "fieldtype": "HTML",
+   "label": "Billing Note"
+  },
+  {
    "fieldname": "progress_notes",
    "fieldtype": "Tab Break",
    "label": "Notes"
@@ -614,7 +645,7 @@
    "link_fieldname": "reference_name"
   }
  ],
- "modified": "2025-09-09 16:41:13.976762",
+ "modified": "2026-04-01 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Inpatient Record",

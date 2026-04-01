@@ -148,6 +148,7 @@ frappe.ui.form.on("Inpatient Record", {
                     inpatient_record: frm.doc.name,
                     admission_date: frm.doc.admitted_datetime,
                     insurance: frm.doc.inp_insurance,
+                    expected_length_of_stay: frm.doc.expected_length_of_stay,
                     doctors_name:
                       frappe.session.user_fullname || frappe.session.user,
                   });
@@ -162,6 +163,7 @@ frappe.ui.form.on("Inpatient Record", {
                     inpatient_record: frm.doc.name,
                     admission_date: frm.doc.admitted_datetime,
                     insurance: frm.doc.inp_insurance,
+                    expected_length_of_stay: frm.doc.expected_length_of_stay,
                     doctors_name:
                       frappe.session.user_fullname || frappe.session.user,
                   });

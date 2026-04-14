@@ -163,11 +163,15 @@ def vacate_room(room_name):
 			return "Room already vacant"
 		
 		if room_data.get('occupancy_status') == 'Occupied':
-			# Check for active inpatient records linked to this room
+			# Check via tabInpatient Occupancy (active rows only) — more reliable than
+			# healthcare_service_unit field on Inpatient Record which can be stale after transfers
 			active_inpatient = frappe.db.sql("""
-				SELECT name, patient_name FROM `tabInpatient Record` 
-				WHERE healthcare_service_unit = %s 
-				AND status IN ('Admitted', 'Discharge Scheduled')
+				SELECT ir.name, ir.patient_name FROM `tabInpatient Occupancy` io
+				JOIN `tabInpatient Record` ir ON ir.name = io.parent
+				WHERE io.service_unit = %s
+				AND (io.left IS NULL OR io.left != 1)
+				AND ir.status IN ('Admitted', 'Discharge Scheduled')
+				LIMIT 1
 			""", (room_name,), as_dict=True)
 			
 			if active_inpatient:

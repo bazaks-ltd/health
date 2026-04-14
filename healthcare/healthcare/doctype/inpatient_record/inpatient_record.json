@@ -368,8 +368,7 @@
   {
    "fieldname": "inpatient_occupancies",
    "fieldtype": "Table",
-   "options": "Inpatient Occupancy",
-   "permlevel": 2
+   "options": "Inpatient Occupancy"
   },
   {
    "depends_on": "eval:doc.status == 'Admitted';",

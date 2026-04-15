@@ -270,7 +270,6 @@ def schedule_discharge(args):
 
         inpatient_record = frappe.get_doc(
             "Inpatient Record", inpatient_record_id)
-        check_out_inpatient(inpatient_record)
         set_details_from_ip_order(inpatient_record, discharge_order)
         inpatient_record.status = "Discharge Scheduled"
         inpatient_record.save(ignore_permissions=True)
@@ -314,7 +313,6 @@ def set_ip_child_records(inpatient_record, inpatient_record_child, encounter_chi
 def check_out_inpatient(inpatient_record):
     if inpatient_record.inpatient_occupancies:
         for inpatient_occupancy in inpatient_record.inpatient_occupancies:
-            print(">>>> inp", inpatient_occupancy)
             if inpatient_occupancy.left != 1:
                 inpatient_occupancy.left = True
                 inpatient_occupancy.check_out = now_datetime()
@@ -356,23 +354,57 @@ def readmit(inpatient_record):
 
     frappe.db.sql("""
         UPDATE `tabInpatient Record`
-        SET  status = %s
+        SET status = %s
         WHERE name = %s
     """, ("Admitted", inpatient_record.name))
 
-    frappe.db.sql(f"""
-			   update `tabInpatient Occupancy` io set `left` = 0 where parent = "{inpatient_record.name}" order by creation limit 1;
-			   """)
-    frappe.db.sql(f"""
-			   update `tabPatient` set inpatient_record = "{inpatient_record.name}", inpatient_status = "Admitted" where name = "{inpatient_record.patient}";
-			   """)
+    # Find the last occupancy row (most recent by check_in) and reactivate only that one
+    last_occupancy = frappe.db.sql("""
+        SELECT name, service_unit
+        FROM `tabInpatient Occupancy`
+        WHERE parent = %s
+        ORDER BY check_in DESC
+        LIMIT 1
+    """, (inpatient_record.name,), as_dict=True)
 
-    # Set the healthcare service unit back to occupied
-    if inpatient_record.inpatient_occupancies:
-        for inpatient_occupancy in inpatient_record.inpatient_occupancies:
-            if inpatient_occupancy.left == 1:  # If patient was discharged from this room
-                frappe.db.set_value(
-                    "Healthcare Service Unit", inpatient_occupancy.service_unit, "occupancy_status", "Occupied")
+    if last_occupancy:
+        last_occ = last_occupancy[0]
+
+        # Check if the room is already occupied by someone else
+        existing_occupant = frappe.db.sql("""
+            SELECT ir.name, ir.patient_name
+            FROM `tabInpatient Occupancy` io
+            JOIN `tabInpatient Record` ir ON io.parent = ir.name
+            WHERE io.service_unit = %s
+            AND io.parent != %s
+            AND (io.`left` IS NULL OR io.`left` = 0)
+            AND ir.status IN ('Admitted', 'Discharge Scheduled')
+            LIMIT 1
+        """, (last_occ.service_unit, inpatient_record.name), as_dict=True)
+
+        if existing_occupant:
+            frappe.throw(
+                f"Cannot readmit: Room '{last_occ.service_unit}' is currently occupied by "
+                f"{existing_occupant[0].patient_name} ({existing_occupant[0].name})"
+            )
+
+        # Reactivate only this occupancy row
+        frappe.db.sql("""
+            UPDATE `tabInpatient Occupancy`
+            SET `left` = 0, check_out = NULL
+            WHERE name = %s
+        """, (last_occ.name,))
+
+        # Mark only this room as Occupied
+        frappe.db.set_value(
+            "Healthcare Service Unit", last_occ.service_unit, "occupancy_status", "Occupied"
+        )
+
+    frappe.db.sql("""
+        UPDATE `tabPatient`
+        SET inpatient_record = %s, inpatient_status = 'Admitted'
+        WHERE name = %s
+    """, (inpatient_record.name, inpatient_record.patient))
 
 
 def validate_inpatient_invoicing(inpatient_record):
@@ -496,8 +528,44 @@ def get_unbilled_inpatient_docs(doc, inpatient_record):
     )
 
 
+def validate_service_unit_not_occupied(service_unit, exclude_inpatient_record=None):
+    """Check that the target room is not already occupied by another patient."""
+    occupancy_status = frappe.db.get_value("Healthcare Service Unit", service_unit, "occupancy_status")
+    if occupancy_status == "Occupied":
+        query = """
+            SELECT ir.name, ir.patient_name
+            FROM `tabInpatient Occupancy` io
+            JOIN `tabInpatient Record` ir ON io.parent = ir.name
+            WHERE io.service_unit = %s
+            AND (io.`left` IS NULL OR io.`left` = 0)
+            AND ir.status IN ('Admitted', 'Discharge Scheduled')
+            {exclude_clause}
+            LIMIT 1
+        """
+        params = [service_unit]
+        exclude_clause = ""
+        if exclude_inpatient_record:
+            exclude_clause = "AND io.parent != %s"
+            params.append(exclude_inpatient_record)
+
+        existing_occupant = frappe.db.sql(
+            query.format(exclude_clause=exclude_clause), params, as_dict=True
+        )
+
+        if existing_occupant:
+            frappe.throw(
+                _("Cannot assign room '{0}': it is currently occupied by {1} ({2})").format(
+                    service_unit,
+                    existing_occupant[0].patient_name,
+                    existing_occupant[0].name
+                ),
+                title=_("Room Occupied")
+            )
+
+
 def admit_patient(inpatient_record, service_unit, check_in, expected_discharge=None):
     validate_nursing_tasks(inpatient_record)
+    validate_service_unit_not_occupied(service_unit)
 
     inpatient_record.admitted_datetime = check_in
     inpatient_record.status = "Admitted"
@@ -515,6 +583,8 @@ def admit_patient(inpatient_record, service_unit, check_in, expected_discharge=N
 
 
 def transfer_patient(inpatient_record, service_unit, check_in):
+    validate_service_unit_not_occupied(service_unit, exclude_inpatient_record=inpatient_record.name)
+
     item_line = inpatient_record.append("inpatient_occupancies", {})
     item_line.service_unit = service_unit
     item_line.check_in = check_in
@@ -522,8 +592,7 @@ def transfer_patient(inpatient_record, service_unit, check_in):
     inpatient_record.save(ignore_permissions=True)
 
     # Mark the new room as occupied
-    from pcare.pcare.custom_doctype.inpatient_record import mark_healthcare_units_occupied
-    mark_healthcare_units_occupied([service_unit])
+    frappe.db.set_value("Healthcare Service Unit", service_unit, "occupancy_status", "Occupied")
 
 
 def patient_leave_service_unit(inpatient_record, check_out, leave_from):
@@ -532,9 +601,9 @@ def patient_leave_service_unit(inpatient_record, check_out, leave_from):
             if inpatient_occupancy.left != 1 and inpatient_occupancy.service_unit == leave_from:
                 inpatient_occupancy.left = True
                 inpatient_occupancy.check_out = check_out
-                # Mark the old room as vacant
-                from pcare.pcare.custom_doctype.inpatient_record import mark_healthcare_units_vacant
-                mark_healthcare_units_vacant([leave_from])
+                frappe.db.set_value(
+                    "Healthcare Service Unit", leave_from, "occupancy_status", "Vacant"
+                )
     inpatient_record.save(ignore_permissions=True)
 
 

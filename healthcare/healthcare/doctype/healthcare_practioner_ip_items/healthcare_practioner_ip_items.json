@@ -14,7 +14,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Item",
-   "link_filters": "[[\"Item\",\"item_group\",\"=\",\"INPATIENT VISIT\"]]",
+   "link_filters": "[[\"Item\",\"item_group\",\"=\",\"INPATIENT SERVICES\"]]",
    "options": "Item"
   }
  ],

@@ -136,7 +136,6 @@
    "fieldtype": "Link",
    "label": "User",
    "options": "User",
-   "read_only_depends_on": "eval: frappe.user.has_role('Medical Secretary')",
    "search_index": 1
   },
   {
@@ -622,7 +621,7 @@
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-10-16 10:34:28.606625",
+ "modified": "2026-05-14 20:24:27.132939",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",

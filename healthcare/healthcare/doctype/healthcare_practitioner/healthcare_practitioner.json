@@ -562,11 +562,9 @@
    "read_only": 1
   },
   {
-   "fetch_from": "company_name.brn",
    "fieldname": "brn",
    "fieldtype": "Data",
-   "label": "BRN",
-   "read_only": 1
+   "label": "BRN"
   },
   {
    "fieldname": "details_tab",
@@ -621,7 +619,7 @@
  ],
  "image_field": "image",
  "links": [],
- "modified": "2026-05-14 20:24:27.132939",
+ "modified": "2026-08-12 11:55:00.000000",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Healthcare Practitioner",
